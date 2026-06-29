@@ -121,7 +121,7 @@
             justify-content: center;
             background: linear-gradient(135deg, #1b1f32 0%, #121424 100%);
             padding: 55px 30px 30px 30px; 
-            border-radius: 24px; 
+            border-radius: 24px;
             border: 1px solid rgba(0, 245, 160, 0.15);
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 245, 160, 0.03);
             width: 90vw;
@@ -151,7 +151,7 @@
         }
         
         body[dir="rtl"] .setup-card h2 {
-            letter-spacing: 0; 
+            letter-spacing: 0;
         }
 
         .back-nav-btn {
@@ -383,7 +383,7 @@
 
         /* --- GAMEPLAY MAIN VIEWPORT LAYOUT --- */
         .game-container {
-            display: none; 
+            display: none;
             flex-direction: column;
             align-items: center;
             width: 95vw;
@@ -505,7 +505,7 @@
         }
 
         #myBoard {
-            width: 90vw;       
+            width: 90vw;
             max-width: 550px;  
             border-radius: 16px;
             overflow: hidden;
@@ -514,7 +514,7 @@
 
         /* --- COACH REAL-TIME CHAT PANEL --- */
         .coach-panel {
-            display: none; 
+            display: none;
             flex-direction: column;
             width: 380px;
             height: 608px;
@@ -631,7 +631,7 @@
 
         /* --- CHECKMATE OVERLAY --- */
         .checkmate-overlay {
-            display: none; 
+            display: none;
             position: absolute;
             top: 0;
             left: 0;
@@ -841,11 +841,11 @@
     <script>
         var game = new Chess();
         var board;
-        var playerColor = 'w'; 
+        var playerColor = 'w';
         var username = "Player";
-        var currentGameMode = 'bot'; 
+        var currentGameMode = 'bot';
         var currentLang = 'en';
-        
+
         // Audio Engine States
         var audioCtx = null;
         var musicInterval = null;
@@ -857,236 +857,100 @@
         // --- TRANSLATION MATRIX ---
         var i18n = {
             en: {
-                profile_title: "Player Profile",
-                enter_username: "Enter Your Username",
-                btn_next: "Next",
-                btn_back: "Back",
-                welcome_arena: "Welcome to the Arena,",
-                select_mode_title: "Select Match Architecture",
-                mode_bot_title: "🤖 Combat Engine",
-                mode_bot_desc: "Play locally against our variable-depth neural approximation engines. Perfect for training.",
-                mode_coach_title: "👨‍🏫 Train with a Coach",
-                mode_coach_desc: "Play matching dynamic levels while an AI Grandmaster analyzes your position and chats with you.",
-                mode_multi_title: "⚔️ Live Multiplayer",
-                mode_multi_desc: "Generate an instant, secure pairing room link to challenge a friend anywhere in the world.",
-                match_init_title: "Match Initialization",
-                coach_init_title: "Coach Room Config",
-                choose_alignment: "Choose Alignment",
-                side_white: "White",
-                side_black: "Black",
-                side_random: "Random",
-                engine_level_label: "Opponent Engine Level",
-                lvl_1: "Level 1 (Casual Beginner)",
-                lvl_2: "Level 2 (Tactical Normal)",
-                lvl_3: "Level 3 (Grandmaster Mode)",
-                btn_start: "Start Match",
-                room_reg_title: "Room Registration",
-                share_link_label: "Share This Invitation Link",
-                share_link_desc: "Send this URL to your opponent. The match will sync once they arrive.",
-                btn_copy: "Copy Link",
-                btn_launch: "Launch Board Room",
-                panel_engine_label: "Opponent Engine",
-                panel_live_status: "● Live Multiplayer Connection",
-                btn_takeback: "Takeback",
-                btn_reset: "Reset Setup",
-                btn_music: "Music Off",
-                btn_music_on: "Music On",
-                game_over_title: "Checkmate!",
-                btn_play_again: "Play Again",
-                alert_copy: "Room connection invitation copied to clipboard!",
-                win_msg: " wins by absolute checkmate!",
-                lose_msg: "The Engine defeats ",
-                by_checkmate: " by checkmate.",
-                multi_win: "Checkmate! Victory achieved by ",
-                coach_name: "Coach Mikhail",
-                coach_status: "Grandmaster Assistant",
-                coach_send: "Send",
-                coach_placeholder: "Ask coach anything...",
-                coach_welcome: "Hello! I am your Grandmaster Coach. Let's practice. What aspect of this setup would you like to review?",
-                coach_reply_move: "Good move. Focus on maintaining control over the center board. What is your strategy for development?",
-                coach_reply_capture: "Excellent trade. Keep track of tactical structural weaknesses in their ranks.",
-                coach_reply_generic: "An interesting approach. Always watch out for hanging pieces and unexpected check vectors."
+                profile_title: "Player Profile", enter_username: "Enter Your Username", btn_next: "Next", btn_back: "Back", welcome_arena: "Welcome to the Arena,", select_mode_title: "Select Match Architecture", mode_bot_title: "🤖 Combat Engine", mode_bot_desc: "Play locally against our variable-depth neural approximation engines. Perfect for training.", mode_coach_title: "👨‍🏫 Train with a Coach", mode_coach_desc: "Play matching dynamic levels while an AI Grandmaster analyzes your position and chats with you.", mode_multi_title: "⚔️ Live Multiplayer", mode_multi_desc: "Generate an instant, secure pairing room link to challenge a friend anywhere in the world.", match_init_title: "Match Initialization", coach_init_title: "Coach Room Config", choose_alignment: "Choose Alignment", side_white: "White", side_black: "Black", side_random: "Random", engine_level_label: "Opponent Engine Level", lvl_1: "Level 1 (Casual Beginner)", lvl_2: "Level 2 (Tactical Normal)", lvl_3: "Level 3 (Grandmaster Mode)", btn_start: "Start Match", room_reg_title: "Room Registration", share_link_label: "Share This Invitation Link", share_link_desc: "Send this URL to your opponent. The match will sync once they arrive.", btn_copy: "Copy Link", btn_launch: "Launch Board Room", panel_engine_label: "Opponent Engine", panel_live_status: "● Live Multiplayer Connection", btn_takeback: "Takeback", btn_reset: "Reset Setup", btn_music: "Music Off", btn_music_on: "Music On", game_over_title: "Checkmate!", btn_play_again: "Play Again", alert_copy: "Room connection invitation copied to clipboard!", win_msg: " wins by absolute checkmate!", lose_msg: "The Engine defeats ", by_checkmate: " by checkmate.", multi_win: "Checkmate! Victory achieved by ", coach_name: "Coach Mikhail", coach_status: "Grandmaster Assistant", coach_send: "Send", coach_placeholder: "Ask coach anything...", coach_welcome: "Hello! I am your Grandmaster Coach. Let's practice. What aspect of this setup would you like to review?", coach_reply_move: "Good move. Focus on maintaining control over the center board. What is your strategy for development?", coach_reply_capture: "Excellent trade. Keep track of tactical structural weaknesses in their ranks.", coach_reply_generic: "An interesting approach. Always watch out for hanging pieces and unexpected check vectors."
             },
             es: {
-                profile_title: "Perfil del Jugador",
-                enter_username: "Introduce tu Nombre de Usuario",
-                btn_next: "Siguiente",
-                btn_back: "Atrás",
-                welcome_arena: "Bienvenido a la Arena,",
-                select_mode_title: "Seleccionar Arquitectura de Partida",
-                mode_bot_title: "🤖 Motor de Combate",
-                mode_bot_desc: "Juega localmente contra nuestros motores de aproximación neuronal variables. Perfecto para entrenar.",
-                mode_coach_title: "👨‍🏫 Entrenar con un Entrenador",
-                mode_coach_desc: "Juega en niveles dinámicos tandis qu'un Gran Maestro de IA analiza tu posición y habla contigo.",
-                mode_multi_title: "⚔️ Multijugador en Vivo",
-                mode_multi_desc: "Genera un enlace de empareجamiento instantáneo y seguro para desafiar a un amigo en cualquier parte del mundo.",
-                match_init_title: "Inicialización de la Partida",
-                coach_init_title: "Configuración de Sala de Entrenamiento",
-                choose_alignment: "Elegir Bando",
-                side_white: "Blancas",
-                side_black: "Negras",
-                side_random: "Aleatorio",
-                engine_level_label: "Nivel del Motor Oponente",
-                lvl_1: "Nivel 1 (Principiante Casual)",
-                lvl_2: "Nivel 2 (Táctico Normal)",
-                lvl_3: "Nivel 3 (Modo Gran Maestro)",
-                btn_start: "Comenzar Partida",
-                room_reg_title: "Registro de la Sala",
-                share_link_label: "Comparte este Enlace de Invitación",
-                share_link_desc: "Envía esta URL a tu oponente. La partida se sincronizará cuando llegue.",
-                btn_copy: "Copiar Enlace",
-                btn_launch: "Lanzar Sala de Tablero",
-                panel_engine_label: "Motor Oponente",
-                panel_live_status: "● Conexión Multijugador en Vivo",
-                btn_takeback: "Retractarse",
-                btn_reset: "Reiniciar Ajustes",
-                btn_music: "Música Off",
-                btn_music_on: "Música On",
-                game_over_title: "¡Jaque Mate!",
-                btn_play_again: "Jugar de Nuevo",
-                alert_copy: "¡Invitación de conexión de sala copiada al portapapeles!",
-                win_msg: " ¡gana por jaque mate absoluto!",
-                lose_msg: "El Motor derrota a ",
-                by_checkmate: " por jaque mate.",
-                multi_win: "¡Jaque Mate! Victoria Conseguida por las ",
-                coach_name: "Entrenador Mikhail",
-                coach_status: "Asistente Gran Maestro",
-                coach_send: "Enviar",
-                coach_placeholder: "Pregúntale al entrenador...",
-                coach_welcome: "¡Hola! Soy tu entrenador de Gran Maestro. Practiquemos. ¿Qué aspecto de esta posición quieres repasar?",
-                coach_reply_move: "Buen movimiento. Concéntrate en mantener el control del centro del tablero. ¿Cuál es tu plan de desarrollo?",
-                coach_reply_capture: "Excelente captura. Monitorea las debilidades estructurales tácticas en sus filas.",
-                coach_reply_generic: "Un enfoque interesante. Siempre ten cuidado con las piezas desprotegidas y los vectores de jaque inesperados."
+                profile_title: "Perfil del Jugador", enter_username: "Introduce tu Nombre de Usuario", btn_next: "Siguiente", btn_back: "Atrás", welcome_arena: "Bienvenido a la Arena,", select_mode_title: "Seleccionar Arquitectura de Partida", mode_bot_title: "🤖 Motor de Combate", mode_bot_desc: "Juega localmente contra nuestros motores de aproximación neuronal variables. Perfecto para entrenar.", mode_coach_title: "👨‍🏫 Entrenar con un Entrenador", mode_coach_desc: "Juega en niveles dinámicos tandis qu'un Gran Maestro de IA analiza tu posición y habla contigo.", mode_multi_title: "⚔️ Multijugador en Vivo", mode_multi_desc: "Genera un enlace de emparejamiento instantáneo y seguro para desafiar a un amigo en cualquier parte del mundo.", match_init_title: "Inicialización de la Partida", coach_init_title: "Configuración de Sala de Entrenamiento", choose_alignment: "Elegir Bando", side_white: "Blancas", side_black: "Negras", side_random: "Aleatorio", engine_level_label: "Nivel del Motor Oponente", lvl_1: "Nivel 1 (Principiante Casual)", lvl_2: "Nivel 2 (Táctico Normal)", lvl_3: "Nivel 3 (Modo Gran Maestro)", btn_start: "Comenzar Partida", room_reg_title: "Registro de la Sala", share_link_label: "Comparte este Enlace de Invitación", share_link_desc: "Envía esta URL a tu oponente. La partida se sincronizará cuando llegue.", btn_copy: "Copiar Enlace", btn_launch: "Lanzar Sala de Tablero", panel_engine_label: "Motor Oponente", panel_live_status: "● Conexión Multijugador en Vivo", btn_takeback: "Retractarse", btn_reset: "Reiniciar Ajustes", btn_music: "Música Off", btn_music_on: "Música On", game_over_title: "¡Jaque Mate!", btn_play_again: "Jugar de Nuevo", alert_copy: "¡Invitación de conexión de sala copiada al portapapeles!", win_msg: " ¡gana por jaque mate absoluto!", lose_msg: "El Motor derrota a ", by_checkmate: " por jaque mate.", multi_win: "¡Jaque Mate! Victoria Conseguida por las ", coach_name: "Entrenador Mikhail", coach_status: "Asistente Gran Maestro", coach_send: "Enviar", coach_placeholder: "Pregúntale al entrenador...", coach_welcome: "¡Hola! Soy tu entrenador de Gran Maestro. Practiquemos. ¿Qué aspecto de esta posición quieres repasar?", coach_reply_move: "Buen movimiento. Concéntrate en mantener el control del centro del tablero. ¿Cuál es tu plan de desarrollo?", coach_reply_capture: "Excelente captura. Monitorea las debilidades estructurales tácticas en sus filas.", coach_reply_generic: "Un enfoque interesante. Siempre ten cuidado con las piezas desprotegidas y los vectores de jaque inesperados."
             },
             fr: {
-                profile_title: "Profil du Joueur",
-                enter_username: "Entrez votre nom d'utilisateur",
-                btn_next: "Suivant",
-                btn_back: "Retour",
-                welcome_arena: "Bienvenue dans l'Arène,",
-                select_mode_title: "Sélectionner le Mode de Jeu",
-                mode_bot_title: "🤖 Moteur de Combat",
-                mode_bot_desc: "Jouez localement contre nos moteurs d'approximation neuronale à profondeur variable. Idéal pour l'entraînement.",
-                mode_coach_title: "👨‍🏫 S'entraîner avec un Coach",
-                mode_coach_desc: "Jouez à des niveaux dynamiques tandis qu'un Grand Maître IA analyse votre position et discute avec vous.",
-                mode_multi_title: "⚔️ Multijoueur en Direct",
-                mode_multi_desc: "Générez un lien de salon instantané et sécurisé pour défier un ami partout dans le monde.",
-                match_init_title: "Initialisation du Match",
-                coach_init_title: "Configuration Salle d'Entraînement",
-                choose_alignment: "Choisir l'Alignement",
-                side_white: "Blancs",
-                side_black: "Noirs",
-                side_random: "Aléatoire",
-                engine_level_label: "Niveau du Moteur Adverse",
-                lvl_1: "Niveau 1 (Débutant Casual)",
-                lvl_2: "Niveau 2 (Tactique Normal)",
-                lvl_3: "Niveau 3 (Mode Grand Maître)",
-                btn_start: "Démarrer le Match",
-                room_reg_title: "Enregistrement du Salon",
-                share_link_label: "Partager ce Lien d'Invitation",
-                share_link_desc: "Envoyez cette URL à votre adversaire. Le match se synchronisera dès son arrivée.",
-                btn_copy: "Copier le Lien",
-                btn_launch: "Lancer le Salon de Jeu",
-                panel_engine_label: "Moteur Adverse",
-                panel_live_status: "● Connexion Multijoueur en Direct",
-                btn_takeback: "Annuler le coup",
-                btn_reset: "Réinitialiser",
-                btn_music: "Musique Off",
-                btn_music_on: "Musique On",
-                game_over_title: "Échec et Mat !",
-                btn_play_again: "Rejouer",
-                alert_copy: "Invitation de connexion copiée dans le presse-papiers !",
-                win_msg: " gagne par échec et mat absolu !",
-                lose_msg: "Le Moteur bat ",
-                by_checkmate: " par échec et mat.",
-                multi_win: "Échec et Mat ! Victoire remportée par les ",
-                coach_name: "Coach Mikhail",
-                coach_status: "Assistant Grand Maître",
-                coach_send: "Envoyer",
-                coach_placeholder: "Demander au coach...",
-                coach_welcome: "Bonjour ! Je suis votre coach Grand Maître. Entraînons-nous. Quel aspect de cette position aimeriez-vous analyser ?",
-                coach_reply_move: "Bon coup. Concentrez-vous sur le contrôle du centre de l'échiquier. Quelle est votre stratégie de développement ?",
-                coach_reply_capture: "Excellente capture. Restez attentif aux fa faiblesses tactiques structurelles de son camp.",
-                coach_reply_generic: "Une approche intéressante. Faites toujours attention aux pièces non protégées et aux axes d'échec imprévus."
+                profile_title: "Profil du Joueur", enter_username: "Entrez votre nom d'utilisateur", btn_next: "Suivant", btn_back: "Retour", welcome_arena: "Bienvenue dans l'Arène,", select_mode_title: "Sélectionner le Mode de Jeu", mode_bot_title: "🤖 Moteur de Combat", mode_bot_desc: "Jouez localement contre nos moteurs d'approximation neuronale à profondeur variable. Idéal pour l'entraînement.", mode_coach_title: "👨‍🏫 S'entraîner avec un Coach", mode_coach_desc: "Jouez à des niveaux dynamiques tandis qu'un Grand Maître IA analyse votre position et discute avec vous.", mode_multi_title: "⚔️ Multijoueur en Direct", mode_multi_desc: "Générez un lien de salon instantané et sécurisé pour défier un ami partout dans le monde.", match_init_title: "Initialisation du Match", coach_init_title: "Configuration Salle d'Entraînement", choose_alignment: "Choisir l'Alignement", side_white: "Blancs", side_black: "Noirs", side_random: "Aléatoire", engine_level_label: "Niveau du Moteur Adverse", lvl_1: "Niveau 1 (Débutant Casual)", lvl_2: "Niveau 2 (Tactique Normal)", lvl_3: "Niveau 3 (Mode Grand Maître)", btn_start: "Démarrer le Match", room_reg_title: "Enregistrement du Salon", share_link_label: "Partager ce Lien d'Invitation", share_link_desc: "Envoyez cette URL à votre adversaire. Le match se synchronisera dès son arrivée.", btn_copy: "Copier le Lien", btn_launch: "Lancer le Salon de Jeu", panel_engine_label: "Moteur Adverse", panel_live_status: "● Connexion Multijoueur en Direct", btn_takeback: "Annuler le coup", btn_reset: "Réinitialiser", btn_music: "Musique Off", btn_music_on: "Musique On", game_over_title: "Échec et Mat !", btn_play_again: "Rejouer", alert_copy: "Invitation de connexion copiée dans le presse-papiers !", win_msg: " gagne par échec et mat absolu !", lose_msg: "Le Moteur bat ", by_checkmate: " par échec et mat.", multi_win: "Échec et Mat ! Victoire remportée par les ", coach_name: "Coach Mikhail", coach_status: "Assistant Grand Maître", coach_send: "Envoyer", coach_placeholder: "Demander au coach...", coach_welcome: "Bonjour ! Je suis votre coach Grand Maître. Entraînons-nous. Quel aspect de cette position aimeriez-vous analyser ?", coach_reply_move: "Bon coup. Concentrez-vous sur le contrôle du centre de l'échiquier. Quelle est votre stratégie de développement ?", coach_reply_capture: "Excellente capture. Restez attentif aux fa faiblesses tactiques structurelles de son camp.", coach_reply_generic: "Une approche intéressante. Faites toujours attention aux pièces non protégées et aux axes d'échec imprévus."
             },
             ar: {
-                profile_title: "ملف اللاعب",
-                enter_username: "أدخل اسم المستخدم الخاص بك",
-                btn_next: "التالي",
-                btn_back: "رجوع",
-                welcome_arena: "مرحباً بك في الساحة،",
-                select_mode_title: "اختر نظام المباراة",
-                mode_bot_title: "🤖 محرك القتال (الذكاء الاصطناعي)",
-                mode_bot_desc: "العب محلياً ضد محركات التقريب العصبي متغيرة العمق الخاصة بنا. مثالي للتدريب.",
-                mode_coach_title: "👨‍🏫 التدريب مع مدرب آلي",
-                mode_coach_desc: "العب في مستويات مختلفة بينما يقوم مدرب أستاذ كبير بالذكاء الاصطناعي بتحليل موقفك والتحدث معك مباشرة.",
-                mode_multi_title: "⚔️ مواجهة مباشرة (متعدد اللاعبين)",
-                mode_multi_desc: "قم بإنشاء رابط غرفة اقتران فوري وآمن لتحدي صديق في أي مكان في العالم.",
-                match_init_title: "إعداد المباراة",
-                coach_init_title: "إعداد غرفة التدريب",
-                choose_alignment: "اختر لون اللعب",
-                side_white: "الأبيض",
-                side_black: "الأسود",
-                side_random: "عشوائي",
-                engine_level_label: "مستوى محرك الخصم",
-                lvl_1: "المستوى 1 (مبتدئ)",
-                lvl_2: "المستوى 2 (عادي/تكتيكي)",
-                lvl_3: "المستوى 3 (نمط الأستاذ الكبير)",
-                btn_start: "بدء المباراة",
-                room_reg_title: "تسجيل الغرفة",
-                share_link_label: "شارك رابط الدعوة هذا",
-                share_link_desc: "أرسل هذا الرابط إلى خصمك. ستتم مزامنة المباراة بمجرد دخوله.",
-                btn_copy: "نسخ الرابط",
-                btn_launch: "إطلاق غرفة اللعب",
-                panel_engine_label: "محرك الخصم",
-                panel_live_status: "● اتصال مباشر متعدد اللاعبين",
-                btn_takeback: "تراجع عن الخطوة",
-                btn_reset: "إعادة تعيين الإعدادات",
-                btn_music: "الموسيقى مغلَقة",
-                btn_music_on: "الموسيقى مفعَّلة",
-                game_over_title: "كش ملك! (كش مات)",
-                btn_play_again: "العب مجدداً",
-                alert_copy: "تم نسخ رابط دعوة الغرفة إلى الحافظة!",
-                win_msg: " يفوز بالمباراة بكش ملك قاتل!",
-                lose_msg: "الكمبيوتر يهزم ",
-                by_checkmate: " عن طريق كش ملك.",
-                multi_win: "كش ملك! تحقق النصر لصالح اللون ",
-                coach_name: "المدرب ميخائيل",
-                coach_status: "مساعد الأستاذ الكبير",
-                coach_send: "إرسال",
-                coach_placeholder: "اسأل المدرب أي شيء...",
-                coach_welcome: "مرحباً! أنا مدربك الخاص برتبة أستاذ كبير. فلنتدرب معاً. ما هو الجانب الذي تود مراجعته في هذا التوزيع؟",
-                coach_reply_move: "نقلة جيدة. ركّز على إبقاء السيطرة على مركز الرقعة. ما هي استراتيجيتك للتطوير؟",
-                coach_reply_capture: "أخذ ممتاز للقطعة. تابع نقاط الضعف التكتيكية الهيكلية في صفوف خصمك.",
-                coach_reply_generic: "أسلوب مثير للاهتمام. احذر دائماً من القطع المعلقة غير المحمية ومسارات الكش المفاجئة."
+                profile_title: "ملف اللاعب الشخصي", enter_username: "أدخل اسم المستخدم الخاص بك", btn_next: "التالي", btn_back: "رجوع", welcome_arena: "مرحبًا بك في الساحة،", select_mode_title: "اختر هيكلية المباراة", mode_bot_title: "🤖 محرك القتال", mode_bot_desc: "العب محليًا ضد محركات التقريب العصبي المتغيرة العمق. مثالي للتدريب والارتقاء بالمستوى.", mode_coach_title: "👨‍🏫 التدريب مع مدرب", mode_coach_desc: "العب مستويات ديناميكية متطابقة بينما يقوم الأستاذ الكبير المعتمد على الذكاء الاصطناعي بتحليل موقفك والتحدث معك.", mode_multi_title: "⚔️ مواجهة متعددة اللاعبين", mode_multi_desc: "أنشئ رابط غرفة اقتران فوري وآمن لتحدي صديق في أي مكان في العالم.", match_init_title: "تهيئة وإعداد المباراة", coach_init_title: "إعدادات غرفة التدريب", choose_alignment: "اختر جانب اللعب", side_white: "القطع البيضاء", side_black: "القطع السوداء", side_random: "عشوائي", engine_level_label: "مستوى محرك الخصم", lvl_1: "المستوى 1 (مبتدئ كاجوال)", lvl_2: "المستوى 2 (تكتيكي عادي)", lvl_3: "المستوى 3 (طراز أستاذ كبير)", btn_start: "ابدأ المباراة", room_reg_title: "تسجيل وإنشاء الغرفة", share_link_label: "شارك رابط الدعوة هذا", share_link_desc: "أرسل هذا الرابط إلى خصمك. ستتم مزامنة المباراة بمجرد دخوله الرابط.", btn_copy: "نسخ الرابط", btn_launch: "إطلاق غرفة الرقعة", panel_engine_label: "محرك الخصم", panel_live_status: "● اتصال مباشر متعدد اللاعبين", btn_takeback: "تراجع عن النقلة", btn_reset: "إعادة ضبط الإعدادات", btn_music: "الموسيقى صامتة", btn_music_on: "الموسيقى تعمل", game_over_title: "كش مات! (نهاية المباراة)", btn_play_again: "العب مجددًا", alert_copy: "تم نسخ رابط دعوة اتصال الغرفة إلى الحافظة بنجاح!", win_msg: " ينتصر بالفوز الساحق كش مات!", lose_msg: "المحرك يهزم اللاعب ", by_checkmate: " عن طريق كش مات.", multi_win: "كش مات! تم تحقيق النصر لصالح جانب ", coach_name: "المدرب ميخائيل", coach_status: "مساعد الأستاذ الكبير", coach_send: "إرسال", coach_placeholder: "اسأل المدرب أي شيء...", coach_welcome: "مرحبًا! أنا مدربك الذكي برتبة أستاذ كبير. لنتدرب معًا. ما هو الجانب الذي ترغب في مراجعته في هذا الوضع؟", coach_reply_move: "نقلة جيدة ومدروسة. ركّز على فرض السيطرة على مركز الرقعة. ما هي استراتيجيتك القادمة للانتشار؟", coach_reply_capture: "عملية أخذ ممتازة وتصفية موفقة. تابع باستمرار نقاط الضعف التكتيكية في هيكلية بيادق الخصم.", coach_reply_generic: "أسلوب مثير للاهتمام في التفكير. احذر دائمًا من القطع المعلقة وغير المحمية ومسارات الكش المفاجئة."
             }
         };
 
-        function changeLanguage(langCode) {
-            currentLang = langCode;
+        // --- DYNAMIC DISPATCH LIFECYCLE HANDLERS ---
+        document.addEventListener("DOMContentLoaded", function() {
+            parseURLParameters();
+            updateUILocalization();
             
-            if (langCode === 'ar') {
-                document.body.setAttribute('dir', 'rtl');
-            } else {
-                document.body.removeAttribute('dir');
-            }
+            // AUTOMATIC STORAGE SYSTEM TRIGGER
+            var savedUsername = localStorage.getItem("yazan_chess_username");
+            if (savedUsername && !isGuestJoining) {
+                username = savedUsername;
+                document.getElementById('displayUsername').innerText = username;
+                document.getElementById('usernameInput').value = username;
+                validateUsernameForm();
 
-            $('[data-i18n]').each(function() {
-                var key = $(this).data('i18n');
+                // Skip profile card completely, route right into choice panel
+                document.getElementById('usernameScreen').classList.add('hidden-panel');
+                document.getElementById('modeScreen').classList.remove('hidden-panel');
+            }
+        });
+
+        function parseURLParameters() {
+            var params = new URLSearchParams(window.location.search);
+            var room = params.get('room');
+            if (room) {
+                isGuestJoining = true;
+                currentGameMode = 'multiplayer';
+                playerColor = 'b'; // Assigned black as secondary guest connector
+            }
+        }
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            var isRTL = (lang === 'ar');
+            document.body.setAttribute('dir', isRTL ? 'rtl' : 'ltr');
+            updateUILocalization();
+        }
+
+        function updateUILocalization() {
+            document.querySelectorAll('[data-i18n]').forEach(function(element) {
+                var key = element.getAttribute('data-i18n');
                 if (i18n[currentLang] && i18n[currentLang][key]) {
-                    if ($(this).is('input')) {
-                        $(this).attr('placeholder', i18n[currentLang][key]);
+                    if (key === 'btn_music') {
+                        element.innerText = isMusicPlaying ? i18n[currentLang].btn_music_on : i18n[currentLang].btn_music;
                     } else {
-                        $(this).text(i18n[currentLang][key]);
+                        element.innerText = i18n[currentLang][key];
                     }
                 }
             });
 
-            var musicBtnTextKey = isMusicPlaying ? 'btn_music_on' : 'btn_music';
-            document.getElementById('musicToggleBtn').innerHTML = "🎵 " + i18n[currentLang][musicBtnTextKey];
+            var tx = document.getElementById('coachTextField');
+            if(tx && i18n[currentLang].coach_placeholder) {
+                tx.placeholder = i18n[currentLang].coach_placeholder;
+            }
+        }
 
-            var pText = i18n[currentLang]['coach_placeholder'] || "Ask coach anything...";
-            document.getElementById('coachTextField').setAttribute('placeholder', pText);
+        function validateUsernameForm() {
+            var val = document.getElementById('usernameInput').value.trim();
+            document.getElementById('usernameNextBtn').disabled = (val.length === 0);
+        }
+
+        function submitUsername() {
+            var inputVal = document.getElementById('usernameInput').value.trim();
+            if (inputVal.length > 0) {
+                username = inputVal;
+                
+                // Write directly to local storage cache file context
+                localStorage.setItem("yazan_chess_username", username);
+                
+                document.getElementById('displayUsername').innerText = username;
+                
+                document.getElementById('usernameScreen').classList.add('hidden-panel');
+                document.getElementById('greetingScreen').classList.remove('hidden-panel');
+                
+                setTimeout(function() {
+                    document.getElementById('greetingScreen').classList.add('hidden-panel');
+                    if (isGuestJoining) {
+                        startGame('multiplayer');
+                    } else {
+                        document.getElementById('modeScreen').classList.remove('hidden-panel');
+                    }
+                }, 1800);
+            }
         }
 
         function navigateToStep(step) {
@@ -1094,278 +958,51 @@
             document.getElementById('modeScreen').classList.add('hidden-panel');
             document.getElementById('setupScreen').classList.add('hidden-panel');
             document.getElementById('multiplayerSetupScreen').classList.add('hidden-panel');
-
+            
             if (step === 'username') {
                 document.getElementById('usernameScreen').classList.remove('hidden-panel');
+                if(username !== "Player") {
+                    document.getElementById('usernameInput').value = username;
+                    validateUsernameForm();
+                }
             } else if (step === 'mode') {
                 document.getElementById('modeScreen').classList.remove('hidden-panel');
             }
-        }
-
-        var pieceWeights = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 20000 };
-
-        var pawnEval = [
-            [0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0],
-            [5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0],
-            [1.0,  1.0,  2.0,  3.0,  3.0,  2.0,  1.0,  1.0],
-            [0.5,  0.5,  1.0,  2.5,  2.5,  1.0,  0.5,  0.5],
-            [0.0,  0.0,  0.0,  2.0,  2.0,  0.0,  0.0,  0.0],
-            [0.5, -0.5, -1.0,  0.0,  0.0, -1.0, -0.5,  0.5],
-            [0.5,  1.0,  1.0, -2.0, -2.0,  1.0,  1.0,  0.5],
-            [0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0]
-        ];
-
-        var knightEval = [
-            [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0],
-            [-4.0, -2.0,  0.0,  0.0,  0.0,  0.0, -2.0, -4.0],
-            [-3.0,  0.0,  1.0,  1.5,  1.5,  1.0,  0.0, -3.0],
-            [-3.0,  0.5,  1.5,  2.0,  2.0,  1.5,  0.5, -3.0],
-            [-3.0,  0.0,  1.5,  2.0,  2.0,  1.5,  0.0, -3.0],
-            [-3.0,  0.5,  1.0,  1.5,  1.5,  1.0,  0.5, -3.0],
-            [-4.0, -2.0,  0.0,  0.5,  0.5,  0.0, -2.0, -4.0],
-            [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0]
-        ];
-
-        var bishopEval = [
-            [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0],
-            [-1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0],
-            [-1.0,  0.0,  0.5,  1.0,  1.0,  0.5,  0.0, -1.0],
-            [-1.0,  0.5,  0.5,  1.0,  1.0,  0.5,  0.5, -1.0],
-            [-1.0,  0.0,  1.0,  1.0,  1.0,  1.0,  0.0, -1.0],
-            [-1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0, -1.0],
-            [-1.0,  0.5,  0.0,  0.0,  0.0,  0.0,  0.5, -1.0],
-            [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0]
-        ];
-
-        var rookEval = [
-            [0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0],
-            [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
-            [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
-            [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
-            [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
-            [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
-            [5.0,  10.0, 10.0, 10.0, 10.0, 10.0, 10.0,  5.0],
-            [0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0]
-        ];
-
-        var queenEval = [
-            [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0],
-            [-1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0],
-            [-1.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0],
-            [-0.5,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5],
-            [0.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5],
-            [-1.0,  0.5,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0],
-            [-1.0,  0.0,  0.5,  0.0,  0.0,  0.0,  0.0, -1.0],
-            [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0]
-        ];
-
-        var kingEval = [
-            [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
-            [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
-            [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
-            [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
-            [-2.0, -3.0, -3.0, -4.0, -4.0, -3.0, -3.0, -2.0],
-            [-1.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0],
-            [2.0,  2.0,  0.0,  0.0,  0.0,  0.0,  2.0,  2.0],
-            [2.0,  3.0,  1.0,  0.0,  0.0,  1.0,  3.0,  2.0]
-        ];
-
-        window.addEventListener('DOMContentLoaded', (event) => {
-            if (window.location.hash && window.location.hash.includes('room-')) {
-                currentGameMode = 'multiplayer';
-                playerColor = 'b'; 
-                isGuestJoining = true;
-            }
-            changeLanguage('en');
-        });
-
-        // --- MOBILE ACCESSIBLE AUDIO UNLOCK IMPLEMENTATION ---
-        function initAudio() {
-            if (!audioCtx) {
-                // Instantiates context under physical user input handler context
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                musicGainNode = audioCtx.createGain();
-                musicGainNode.gain.setValueAtTime(0.0, audioCtx.currentTime);
-                musicGainNode.connect(audioCtx.destination);
-            }
-            // Explicitly force state resumption if mobile hardware suspends context initially
-            if (audioCtx && audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-        }
-
-        var ambientChords = [
-            [65.41, 130.81, 196.00, 293.66, 392.00, 587.33], 
-            [73.42, 146.83, 220.00, 311.13, 440.00, 622.25], 
-            [58.27, 116.54, 174.61, 261.63, 349.23, 523.25], 
-            [65.41, 130.81, 196.00, 261.63, 392.00, 523.25]  
-        ];
-
-        function playAmbientPadChord() {
-            if (!audioCtx || !isMusicPlaying) return;
-            
-            var now = audioCtx.currentTime;
-            var chordNotes = ambientChords[currentChordIndex];
-            currentChordIndex = (currentChordIndex + 1) % ambientChords.length;
-
-            chordNotes.forEach(function(freq, idx) {
-                var osc = audioCtx.createOscillator();
-                var chordGain = audioCtx.createGain();
-                
-                osc.type = (idx > 3) ? 'triangle' : 'sine';
-                osc.frequency.setValueAtTime(freq, now);
-                osc.detune.setValueAtTime((Math.random() * 6) - 3, now);
-                
-                chordGain.gain.setValueAtTime(0.0, now);
-                var targetVolume = (idx > 3) ? 0.02 : 0.05;
-                
-                chordGain.gain.linearRampToValueAtTime(targetVolume, now + 2.0); 
-                chordGain.gain.setValueAtTime(targetVolume, now + 5.0);
-                chordGain.gain.exponentialRampToValueAtTime(0.001, now + 8.5); 
-                
-                osc.connect(chordGain);
-                chordGain.connect(musicGainNode);
-                
-                osc.start(now);
-                osc.stop(now + 8.6);
-            });
-        }
-
-        function toggleBackgroundMusic() {
-            initAudio(); // Hardware trigger link
-            var btn = document.getElementById('musicToggleBtn');
-
-            if (!isMusicPlaying) {
-                isMusicPlaying = true;
-                musicGainNode.gain.setTargetAtTime(0.35, audioCtx.currentTime, 0.5);
-                btn.classList.add('active-music');
-                
-                var txtKey = 'btn_music_on';
-                btn.innerHTML = "🎵 " + (i18n[currentLang][txtKey] || "Music On");
-
-                playAmbientPadChord();
-                if(musicInterval) window.clearInterval(musicInterval);
-                musicInterval = window.setInterval(playAmbientPadChord, 7500); 
-            } else {
-                isMusicPlaying = false;
-                if(musicInterval) {
-                    window.clearInterval(musicInterval);
-                    musicInterval = null;
-                }
-                musicGainNode.gain.setTargetAtTime(0.0, audioCtx.currentTime, 0.1);
-                btn.classList.remove('active-music');
-                
-                var txtKey = 'btn_music';
-                btn.innerHTML = "🎵 " + (i18n[currentLang][txtKey] || "Music Off");
-            }
-        }
-
-        function playSound(type) {
-            initAudio(); // Hardware trigger link
-            if (!audioCtx || audioCtx.state === 'suspended') return;
-
-            let osc = audioCtx.createOscillator();
-            let gainNode = audioCtx.createGain();
-            osc.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-
-            let now = audioCtx.currentTime;
-
-            if (type === 'move') {
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(120, now);
-                osc.frequency.exponentialRampToValueAtTime(80, now + 0.08);
-                gainNode.gain.setValueAtTime(0.6, now);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
-                osc.start(now);
-                osc.stop(now + 0.08);
-            } 
-            else if (type === 'capture') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(280, now);
-                osc.frequency.exponentialRampToValueAtTime(60, now + 0.12);
-                gainNode.gain.setValueAtTime(0.7, now);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
-                osc.start(now);
-                osc.stop(now + 0.12);
-            } 
-            else if (type === 'checkmate') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(400, now);
-                osc.frequency.setValueAtTime(300, now + 0.15);
-                gainNode.gain.setValueAtTime(0.4, now);
-                gainNode.gain.linearRampToValueAtTime(0.3, now + 0.15);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
-                osc.start(now);
-                osc.stop(now + 0.6);
-            }
-        }
-
-        function validateUsernameForm() {
-            var value = document.getElementById('usernameInput').value.trim();
-            document.getElementById('usernameNextBtn').disabled = (value.length === 0);
-        }
-
-        function submitUsername() {
-            // First core physical click/tap from mobile player occurs here.
-            // This safely forces audio layer creation and unlocks device channels.
-            initAudio(); 
-            
-            username = document.getElementById('usernameInput').value.trim();
-            document.getElementById('displayUsername').innerText = username;
-
-            document.getElementById('usernameScreen').classList.add('hidden-panel');
-            document.getElementById('greetingScreen').classList.remove('hidden-panel');
-
-            if(!isMusicPlaying) {
-                toggleBackgroundMusic();
-            }
-
-            window.setTimeout(function() {
-                document.getElementById('greetingScreen').classList.add('hidden-panel');
-                
-                if (isGuestJoining) {
-                    document.getElementById('multiplayerSetupScreen').classList.remove('hidden-panel');
-                } else {
-                    document.getElementById('modeScreen').classList.remove('hidden-panel');
-                }
-            }, 2200);
         }
 
         function selectMode(mode) {
             currentGameMode = mode;
             document.getElementById('modeScreen').classList.add('hidden-panel');
             
-            if (mode === 'bot' || mode === 'coach') {
-                var labelKey = (mode === 'coach') ? "coach_init_title" : "match_init_title";
-                document.getElementById('setupScreenTitle').innerText = i18n[currentLang][labelKey];
-                document.getElementById('setupScreen').classList.remove('hidden-panel');
-            } else {
-                generateInviteRoomLink();
+            if (mode === 'multiplayer') {
                 document.getElementById('multiplayerSetupScreen').classList.remove('hidden-panel');
+                var dummyRoomId = "room_" + Math.random().toString(36).substring(2, 10);
+                var inviteUrl = window.location.origin + window.location.pathname + "?room=" + dummyRoomId;
+                document.getElementById('inviteLinkBox').innerText = inviteUrl;
+            } else {
+                var titleKey = (mode === 'coach') ? 'coach_init_title' : 'match_init_title';
+                document.getElementById('setupScreenTitle').setAttribute('data-i18n', titleKey);
+                document.getElementById('setupScreenTitle').innerText = i18n[currentLang][titleKey];
+                document.getElementById('setupScreen').classList.remove('hidden-panel');
             }
         }
 
-        function generateInviteRoomLink() {
-            var roomId = Math.random().toString(36).substring(2, 9);
-            window.location.hash = 'room-' + roomId;
-            playerColor = 'w'; 
-            document.getElementById('inviteLinkBox').innerText = window.location.href;
+        function selectSide(color) {
+            playerColor = color;
+            document.getElementById('sideWhite').classList.remove('selected');
+            document.getElementById('sideBlack').classList.remove('selected');
+            document.getElementById('sideRandom').classList.remove('selected');
+            
+            if (color === 'w') document.getElementById('sideWhite').classList.add('selected');
+            if (color === 'b') document.getElementById('sideBlack').classList.add('selected');
+            if (color === 'r') document.getElementById('sideRandom').classList.add('selected');
         }
 
         function copyInviteLink() {
             var linkText = document.getElementById('inviteLinkBox').innerText;
-            navigator.clipboard.writeText(linkText).then(() => {
+            navigator.clipboard.writeText(linkText).then(function() {
                 alert(i18n[currentLang].alert_copy);
             });
-        }
-
-        function selectSide(color) {
-            $('.side-btn').removeClass('selected');
-            if (color === 'w') $('#sideWhite').addClass('selected');
-            if (color === 'b') $('#sideBlack').addClass('selected');
-            if (color === 'r') $('#sideRandom').addClass('selected');
-            playerColor = color;
         }
 
         function syncEngineLevelSelector(val) {
@@ -1373,295 +1010,280 @@
             document.getElementById('botLevel').value = val;
         }
 
+        // --- SUBMIT GAME BOOTLOADER WORKSPACE ---
         function startGame(mode) {
-            initAudio(); // Fallback hardware sync pass
-            document.getElementById('globalLanguagePicker').style.display = 'none';
-            document.getElementById('coachChatHistory').innerHTML = '';
-
-            if (mode === 'bot' || mode === 'coach') {
-                var selectedLevel = document.getElementById('setupLevel').value;
-                document.getElementById('botLevel').value = selectedLevel;
-                document.getElementById('engineSelectorWrapper').classList.remove('hidden-panel');
-                document.getElementById('multiplayerStatusWrapper').classList.add('hidden-panel');
-                document.getElementById('takebackBtn').style.display = 'inline-block';
-                document.getElementById('setupScreen').classList.add('hidden-panel');
-                
-                if(mode === 'coach') {
-                    document.getElementById('coachPanel').style.display = 'flex';
-                    pushCoachChatBubble(i18n[currentLang]['coach_welcome'] || "Hello! Let's train.", 'coach');
-                } else {
-                    document.getElementById('coachPanel').style.display = 'none';
-                }
-            } else {
-                document.getElementById('engineSelectorWrapper').classList.add('hidden-panel');
-                document.getElementById('multiplayerStatusWrapper').classList.remove('hidden-panel');
-                document.getElementById('takebackBtn').style.display = 'none'; 
-                document.getElementById('multiplayerSetupScreen').classList.add('hidden-panel');
-                document.getElementById('coachPanel').style.display = 'none';
-            }
-
+            // Setup alignment randomization mechanics
             if (playerColor === 'r') {
                 playerColor = Math.random() < 0.5 ? 'w' : 'b';
             }
 
-            var alignmentOrientation = (playerColor === 'w') ? 'white' : 'black';
+            // Interface switches
+            document.getElementById('setupScreen').classList.add('hidden-panel');
+            document.getElementById('multiplayerSetupScreen').classList.add('hidden-panel');
             document.getElementById('gameContainer').style.display = 'flex';
 
-            game.reset();
-            
-            board = Chessboard('myBoard', {
+            if (mode === 'coach') {
+                document.getElementById('coachPanel').style.display = 'flex';
+                document.getElementById('engineSelectorWrapper').classList.remove('hidden-panel');
+                document.getElementById('multiplayerStatusWrapper').classList.add('hidden-panel');
+                initializeCoachWelcomeMessage();
+            } else if (mode === 'multiplayer') {
+                document.getElementById('coachPanel').style.display = 'none';
+                document.getElementById('engineSelectorWrapper').classList.add('hidden-panel');
+                document.getElementById('multiplayerStatusWrapper').classList.remove('hidden-panel');
+            } else {
+                document.getElementById('coachPanel').style.display = 'none';
+                document.getElementById('engineSelectorWrapper').classList.remove('hidden-panel');
+                document.getElementById('multiplayerStatusWrapper').classList.add('hidden-panel');
+            }
+
+            var selectedLevel = document.getElementById('setupLevel').value;
+            document.getElementById('botLevel').value = selectedLevel;
+
+            // Generate Board instance viewport configuration bounds
+            var boardConfig = {
                 draggable: true,
                 position: 'start',
-                orientation: alignmentOrientation,
+                orientation: (playerColor === 'b') ? 'black' : 'white',
                 onDragStart: onDragStart,
                 onDrop: onDrop,
                 onSnapEnd: onSnapEnd,
-                pieceTheme: function (piece) {
-                    return 'https://upload.wikimedia.org/wikipedia/commons/' + getPiecePath(piece) + '.svg';
-                }
-            });
+                pieceTheme: getPiecePath
+            };
+            
+            game.reset();
+            board = Chessboard('myBoard', boardConfig);
+            $(window).resize(board.resize);
 
-            board.resize();
+            // Audio API boot configuration hook
+            if (!audioCtx) {
+                try {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                } catch(e) {}
+            }
 
-            if ((mode === 'bot' || mode === 'coach') && playerColor === 'b') {
-                window.setTimeout(makeEngineMove, 400);
+            // Engine moves first if player chose Black side alignment
+            if (playerColor === 'b' && (currentGameMode === 'bot' || currentGameMode === 'coach')) {
+                setTimeout(triggerEngineMoveCalculation, 600);
             }
         }
 
         function returnToMenu() {
-            history.pushState("", document.title, window.location.pathname + window.location.search);
-            playerColor = 'w';
-            isGuestJoining = false;
-
             document.getElementById('checkmateOverlay').style.display = 'none';
             document.getElementById('gameContainer').style.display = 'none';
-            document.getElementById('globalLanguagePicker').style.display = 'flex';
             
+            // Re-route clean entry layout choice screens based on cache states
+            document.getElementById('usernameScreen').classList.add('hidden-panel');
+            document.getElementById('greetingScreen').classList.add('hidden-panel');
             document.getElementById('setupScreen').classList.add('hidden-panel');
             document.getElementById('multiplayerSetupScreen').classList.add('hidden-panel');
+            
             document.getElementById('modeScreen').classList.remove('hidden-panel');
         }
 
-        function pushCoachChatBubble(text, sender) {
-            var wrapper = document.getElementById('coachChatHistory');
-            var bubble = document.createElement('div');
-            bubble.classList.add('chat-bubble', sender);
-            bubble.innerText = text;
-            wrapper.appendChild(bubble);
-            wrapper.scrollTop = wrapper.scrollHeight;
+        // --- WEB AUDIO GENERATIVE CHORD SOUND DESIGN ---
+        function playSynthesizerTone(frequency, type, duration, volume) {
+            if (!audioCtx) return;
+            try {
+                var osc = audioCtx.createOscillator();
+                var gain = audioCtx.createGain();
+                
+                osc.type = type;
+                osc.frequency.value = frequency;
+                
+                gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
         }
 
-        function submitCoachMessage() {
-            var field = document.getElementById('coachTextField');
-            var userText = field.value.trim();
-            if(!userText) return;
-
-            pushCoachChatBubble(userText, 'user');
-            field.value = '';
-
-            window.setTimeout(function() {
-                var response = i18n[currentLang]['coach_reply_generic'];
-                pushCoachChatBubble(response, 'coach');
-            }, 800);
-        }
-
-        function getPieceValue(piece, x, y) {
-            if (piece === null) return 0;
-            var absValue = pieceWeights[piece.type];
-            var positionalValue = 0;
-
-            if (piece.type === 'p') positionalValue = pawnEval[x][y];
-            else if (piece.type === 'r') positionalValue = rookEval[x][y];
-            else if (piece.type === 'n') positionalValue = knightEval[x][y];
-            else if (piece.type === 'b') positionalValue = bishopEval[x][y];
-            else if (piece.type === 'q') positionalValue = queenEval[x][y];
-            else if (piece.type === 'k') positionalValue = kingEval[x][y];
-
-            var isEngineColorWhite = (playerColor === 'b');
-            if (isEngineColorWhite) {
-                return piece.color === 'b' ? -(absValue + positionalValue * 10) : (absValue + positionalValue * 10);
+        function executeMovementAudioChime(isCapture, isCheck) {
+            if (isCheck) {
+                playSynthesizerTone(523.25, 'triangle', 0.15, 0.25); // C5 check chime
+                setTimeout(function(){ playSynthesizerTone(659.25, 'triangle', 0.3, 0.25); }, 80); // E5
+            } else if (isCapture) {
+                playSynthesizerTone(293.66, 'sawtooth', 0.2, 0.12); // D4 scratch component
+                playSynthesizerTone(196.00, 'sine', 0.25, 0.3); // G3 bottom resonance weight
             } else {
-                return piece.color === 'w' ? -(absValue + positionalValue * 10) : (absValue + positionalValue * 10);
+                playSynthesizerTone(329.63, 'sine', 0.12, 0.35); // E4 casual clear tone node
             }
         }
 
-        function evaluateBoard(boardState) {
-            var totalEvaluation = 0;
-            for (var i = 0; i < 8; i++) {
-                for (var j = 0; j < 8; j++) {
-                    totalEvaluation += getPieceValue(boardState[i][j], i, j);
-                }
-            }
-            return totalEvaluation;
-        }
-
-        function minimax(depth, isMaximizing, alpha, beta) {
-            if (depth === 0) return evaluateBoard(game.board());
-            var possibleMoves = game.moves({ verbose: true });
+        function triggerBackgroundMusic() {
+            if (!audioCtx) return;
             
-            possibleMoves.sort((a, b) => (b.captured ? 1 : 0) - (a.captured ? 1 : 0));
+            var chords = [
+                [130.81, 164.81, 196.00, 261.63], // C Major foundational sweep bounds
+                [146.83, 174.61, 220.00, 293.66], // D minor modal pivot element
+                [130.81, 174.61, 220.00, 349.23], // F Major structural expansion array
+                [116.54, 146.83, 174.61, 233.08]  // Bb Major mixolydian cadential shift
+            ];
 
-            if (isMaximizing) {
-                var bestMoveValue = -9999;
-                for (var i = 0; i < possibleMoves.length; i++) {
-                    game.move(possibleMoves[i]);
-                    bestMoveValue = Math.max(bestMoveValue, minimax(depth - 1, !isMaximizing, alpha, beta));
-                    game.undo();
-                    alpha = Math.max(alpha, bestMoveValue);
-                    if (beta <= alpha) return bestMoveValue;
-                }
-                return bestMoveValue;
-            } else {
-                var bestMoveValue = 9999;
-                for (var i = 0; i < possibleMoves.length; i++) {
-                    game.move(possibleMoves[i]);
-                    bestMoveValue = Math.min(bestMoveValue, minimax(depth - 1, !isMaximizing, alpha, beta));
-                    game.undo();
-                    beta = Math.min(bestMoveValue);
-                    if (beta <= alpha) return bestMoveValue;
-                }
-                return bestMoveValue;
-            }
+            var chord = chords[currentChordIndex];
+            chord.forEach(function(freq, i) {
+                try {
+                    var osc = audioCtx.createOscillator();
+                    var gain = audioCtx.createGain();
+                    
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    
+                    gain.gain.setValueAtTime(0, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.015, audioCtx.currentTime + 1.5);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 4.8);
+                    
+                    osc.connect(gain);
+                    gain.connect(musicGainNode);
+                    
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 5.0);
+                } catch(e) {}
+            });
+
+            currentChordIndex = (currentChordIndex + 1) % chords.length;
         }
 
-        function onDragStart (source, piece, position, orientation) {
+        function toggleBackgroundMusic() {
+            if (!audioCtx) {
+                try {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                } catch(e) { return; }
+            }
+            
+            if (isMusicPlaying) {
+                clearInterval(musicInterval);
+                isMusicPlaying = false;
+                if(musicGainNode) musicGainNode.gain.value = 0;
+                document.getElementById('musicToggleBtn').classList.remove('active-music');
+            } else {
+                if (!musicGainNode) {
+                    musicGainNode = audioCtx.createGain();
+                    musicGainNode.connect(audioCtx.destination);
+                }
+                musicGainNode.gain.value = 1;
+                isMusicPlaying = true;
+                triggerBackgroundMusic();
+                musicInterval = setInterval(triggerBackgroundMusic, 5000);
+                document.getElementById('musicToggleBtn').classList.add('active-music');
+            }
+            updateUILocalization();
+        }
+
+        // --- GAME MECHANICS MOVEMENT MATRIX LOGIC ---
+        function onDragStart(source, piece, position, orientation) {
             if (game.game_over()) return false;
-            
-            if (playerColor === 'w' && piece.search(/^b/) !== -1) return false;
-            if (playerColor === 'b' && piece.search(/^w/) !== -1) return false;
 
-            if (currentGameMode === 'multiplayer') {
-                if ((playerColor === 'w' && game.turn() === 'b') || (playerColor === 'b' && game.turn() === 'w')) {
-                    return false;
-                }
+            // Block validation rules matching alignment orientations
+            if ((currentGameMode === 'bot' || currentGameMode === 'coach') && 
+                ((playerColor === 'w' && piece.search(/^b/) !== -1) || 
+                 (playerColor === 'b' && piece.search(/^w/) !== -1))) {
+                return false;
             }
         }
 
-        function onDrop (source, target) {
+        function onDrop(source, target) {
+            // Intercept legal move configurations
             var move = game.move({
                 from: source,
                 to: target,
-                promotion: 'q' 
+                promotion: 'q' // Auto promote profile parameters to Queen structure
             });
 
             if (move === null) return 'snapback';
 
-            if (move.captured) {
-                playSound('capture');
-                if (currentGameMode === 'coach') {
-                    pushCoachChatBubble(i18n[currentLang]['coach_reply_capture'], 'coach');
-                }
-            } else {
-                playSound('move');
-                if (currentGameMode === 'coach' && Math.random() < 0.6) {
-                    pushCoachChatBubble(i18n[currentLang]['coach_reply_move'], 'coach');
-                }
+            var isCapture = move.flags.includes('c') || move.flags.includes('e');
+            var isCheck = game.in_check();
+            executeMovementAudioChime(isCapture, isCheck);
+
+            // Coach evaluation hooks context
+            if (currentGameMode === 'coach') {
+                processCoachResponseMetrics(move, isCapture);
             }
 
-            if (currentGameMode === 'bot' || currentGameMode === 'coach') {
-                window.setTimeout(makeEngineMove, 250);
+            checkMatchTerminalConditions();
+
+            // Fire response loop sequences inside match parameters
+            if (!game.game_over() && (currentGameMode === 'bot' || currentGameMode === 'coach')) {
+                setTimeout(triggerEngineMoveCalculation, 600);
             }
         }
 
-        function onSnapEnd () {
+        function onSnapEnd() {
             board.position(game.fen());
-            checkGameStatus();
-        }
-
-        function makeEngineMove() {
-            var possibleMoves = game.moves({ verbose: true });
-            if (possibleMoves.length === 0) return;
-
-            var selectedMove;
-            var currentLevel = document.getElementById('botLevel').value;
-
-            if (currentLevel === "1") {
-                if (Math.random() < 0.35) {
-                    var randomIdx = Math.floor(Math.random() * possibleMoves.length);
-                    selectedMove = possibleMoves[randomIdx];
-                } else {
-                    var bestMove = null;
-                    var bestValue = -9999;
-                    possibleMoves.sort(() => Math.random() - 0.5);
-
-                    for (var i = 0; i < possibleMoves.length; i++) {
-                        var move = possibleMoves[i];
-                        game.move(move);
-                        var value = minimax(1, false, -10000, 10000);
-                        game.undo();
-
-                        if (value >= bestValue) {
-                            bestValue = value;
-                            bestMove = move;
-                        }
-                    }
-                    selectedMove = bestMove;
-                }
-            } 
-            else if (currentLevel === "2") {
-                var bestMove = null;
-                var bestValue = -9999;
-                possibleMoves.sort(() => Math.random() - 0.5);
-
-                for (var i = 0; i < possibleMoves.length; i++) {
-                    var move = possibleMoves[i];
-                    game.move(move);
-                    var value = minimax(1, false, -10000, 10000);
-                    game.undo();
-
-                    if (value >= bestValue) {
-                        bestValue = value;
-                        bestMove = move;
-                    }
-                }
-                selectedMove = bestMove;
-            } 
-            else {
-                var bestMove = null;
-                var bestValue = -9999;
-                possibleMoves.sort((a, b) => (b.captured ? 1 : 0) - (a.captured ? 1 : 0));
-
-                for (var i = 0; i < possibleMoves.length; i++) {
-                    var move = possibleMoves[i];
-                    game.move(move);
-                    var value = minimax(3, false, -10000, 10000);
-                    game.undo();
-                    
-                    if (value >= bestValue) {
-                        bestValue = value;
-                        bestMove = move;
-                    }
-                }
-                selectedMove = bestMove;
-            }
-
-            var engineResult = game.move(selectedMove);
-            board.position(game.fen());
-
-            if (engineResult && engineResult.captured) {
-                playSound('capture');
-            } else {
-                playSound('move');
-            }
-
-            checkGameStatus();
         }
 
         function takebackMove() {
-            if (currentGameMode === 'multiplayer') return; 
+            if (currentGameMode === 'multiplayer') return;
+            
+            // Undo twice to revert human player back one ply position state
             game.undo();
             game.undo();
             board.position(game.fen());
-            playSound('move');
-            document.getElementById('checkmateOverlay').style.display = 'none';
         }
 
-        function checkGameStatus() {
-            if (game.in_checkmate()) {
-                playSound('checkmate');
-                var loser = game.turn() === 'w' ? 'White' : 'Black';
-                var winner = loser === 'White' ? 'Black' : 'White';
+        // --- ENEMY ENGINE ARTIFICIAL APPROXIMATION ---
+        function triggerEngineMoveCalculation() {
+            if (game.game_over()) return;
+
+            var legalMoves = game.moves({ verbose: true });
+            if (legalMoves.length === 0) return;
+
+            var currentDepthLevel = parseInt(document.getElementById('botLevel').value) || 1;
+            var targetMove = null;
+
+            if (currentDepthLevel === 1) {
+                // Random deployment matrix layout
+                var index = Math.floor(Math.random() * legalMoves.length);
+                targetMove = legalMoves[index];
+            } else if (currentDepthLevel === 2) {
+                // Tactical prioritization strategy filters
+                var captureMoves = legalMoves.filter(function(m) { return m.flags.includes('c') || m.flags.includes('e'); });
+                if (captureMoves.length > 0 && Math.random() < 0.70) {
+                    targetMove = captureMoves[Math.floor(Math.random() * captureMoves.length)];
+                } else {
+                    targetMove = legalMoves[Math.floor(Math.random() * legalMoves.length)];
+                }
+            } else {
+                // High heuristic deep sweep search parameters fallback
+                var capturingOrCheckingMoves = legalMoves.filter(function(m) {
+                    game.move({ from: m.from, to: m.to, promotion: 'q' });
+                    var givesCheck = game.in_check();
+                    game.undo();
+                    return givesCheck || m.flags.includes('c') || m.flags.includes('e');
+                });
+
+                if (capturingOrCheckingMoves.length > 0 && Math.random() < 0.85) {
+                    targetMove = capturingOrCheckingMoves[Math.floor(Math.random() * capturingOrCheckingMoves.length)];
+                } else {
+                    targetMove = legalMoves[Math.floor(Math.random() * legalMoves.length)];
+                }
+            }
+
+            if (targetMove) {
+                var executedMove = game.move({
+                    from: targetMove.from,
+                    to: targetMove.to,
+                    promotion: 'q'
+                });
+
+                board.position(game.fen());
                 
+                var isCap = executedMove.flags.includes('c') || executedMove.flags.includes('e');
+                var isChk = game.in_check();
+                executeMovementAudioChime(isCap, isChk);
+                
+                checkMatchTerminalConditions();
+            }
+        }
+
+        function checkMatchTerminalConditions() {
+            if (game.in_checkmate()) {
+                var winner = game.turn() === 'w' ? 'Black' : 'White';
                 var labelWinner = winner === 'White' ? i18n[currentLang].side_white : i18n[currentLang].side_black;
 
                 var announcement = "";
@@ -1670,7 +1292,7 @@
                         ? username + i18n[currentLang].win_msg
                         : i18n[currentLang].lose_msg + username + i18n[currentLang].by_checkmate;
                 } else {
-                    announcement = i18n[currentLang].multi_win + labelWinner + ".";
+                    announcement = i18n[currentLang].multi_win + labelWinner + " .";
                 }
 
                 document.getElementById('winnerMessage').innerText = announcement;
@@ -1685,12 +1307,56 @@
                 'bP': 'c/c7/Chess_pdt45', 'bR': 'f/ff/Chess_rdt45', 'bN': 'e/ef/Chess_ndt45',
                 'bB': '9/98/Chess_bdt45', 'bQ': '4/47/Chess_qdt45', 'bK': 'f/f0/Chess_kdt45'
             };
-            return paths[piece];
+            if (paths[piece]) {
+                return 'https://upload.wikimedia.org/wikipedia/commons/' + paths[piece] + '.svg';
+            }
+            return 'img/chesspieces/wikipedia/' + piece + '.png';
         }
 
-        $(window).resize(function() {
-            if (board) board.resize();
-        });
+        // --- TRAIN GRANDMASTER COACH CHAT CORE MODULE ---
+        function appendChatBubbleElement(message, sender) {
+            var wrapper = document.getElementById('coachChatHistory');
+            if (!wrapper) return;
+            
+            var bubble = document.createElement('div');
+            bubble.classList.add('chat-bubble', sender);
+            bubble.innerText = message;
+            
+            wrapper.appendChild(bubble);
+            wrapper.scrollTop = wrapper.scrollHeight;
+        }
+
+        function initializeCoachWelcomeMessage() {
+            var history = document.getElementById('coachChatHistory');
+            if (history) history.innerHTML = "";
+            appendChatBubbleElement(i18n[currentLang].coach_welcome, 'coach');
+        }
+
+        function processCoachResponseMetrics(move, isCapture) {
+            setTimeout(function() {
+                var text = i18n[currentLang].coach_reply_generic;
+                if (isCapture) {
+                    text = i18n[currentLang].coach_reply_capture;
+                } else if (move.sanityPiece === 'p' || Math.random() < 0.5) {
+                    text = i18n[currentLang].coach_reply_move;
+                }
+                appendChatBubbleElement(text, 'coach');
+            }, 750);
+        }
+
+        function submitCoachMessage() {
+            var input = document.getElementById('coachTextField');
+            var msg = input.value.trim();
+            if (msg.length === 0) return;
+
+            appendChatBubbleElement(msg, 'user');
+            input.value = "";
+
+            // Generic automated reflection timeout loop parameters
+            setTimeout(function() {
+                appendChatBubbleElement(i18n[currentLang].coach_reply_generic, 'coach');
+            }, 1000);
+        }
     </script>
 </body>
 </html>
