@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Advanced AI & Chess Arena</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300..700&family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: radial-gradient(circle at center, #1a1c2e 0%, #0f1016 100%); 
+            margin: 0;
+            font-family: 'Fredoka', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        body[dir="rtl"] {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body[dir="rtl"] input, 
+        body[dir="rtl"] select, 
+        body[dir="rtl"] button {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        /* --- PRE-GAME SCREENS CONTAINER & CARDS --- */
+        .setup-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1b1f32 0%, #121424 100%);
+            padding: 55px 30px 30px 30px; /* Top padding protects the back button zone */
+            border-radius: 24px; 
+            border: 1px solid rgba(0, 245, 160, 0.15);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 245, 160, 0.03);
+            width: 90vw;
+            max-width: 440px;
+            box-sizing: border-box;
+            z-index: 100;
+            position: relative;
+        }
+
+        .hidden-panel {
+            display: none !important;
+        }
+
+        .setup-card h2 {
+            color: #ffffff;
+            margin-top: 5px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 19px;
+            font-weight: 600;
+            text-align: center;
+            border-bottom: 2px solid #00f5a0;
+            padding-bottom: 12px;
+            width: 100%;
+            text-shadow: 0 0 10px rgba(0, 245, 160, 0.2);
+        }
+        
+        body[dir="rtl"] .setup-card h2 {
+            letter-spacing: 0; 
+        }
+
+        /* UNIVERSAL BACK NAVIGATION BUTTON FIXED DESIGN */
+        .back-nav-btn {
+            position: absolute;
+            top: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            padding: 6px 14px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            z-index: 110;
+        }
+        
+        body:not([dir="rtl"]) .back-nav-btn { left: 15px; }
+        body[dir="rtl"] .back-nav-btn { right: 15px; }
+
+        .back-nav-btn:hover {
+            color: #00f5a0;
+            border-color: #00f5a0;
+            background: rgba(0, 245, 160, 0.08);
+            transform: translateY(-1px);
+        }
+
+        body[dir="rtl"] .back-nav-btn span {
+            transform: scaleX(-1);
+            display: inline-block;
+        }
+
+        .setup-group {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin-bottom: 20px;
+            gap: 8px;
+        }
+
+        .setup-group label {
+            color: #94a3b8;
+            font-weight: 500;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        .username-input {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #0b0c16;
+            color: #ffffff;
+            border: 2px solid #2e3552;
+            padding: 14px;
+            font-size: 16px;
+            border-radius: 14px;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        .username-input:focus {
+            border-color: #00f5a0;
+            box-shadow: 0 0 12px rgba(0, 245, 160, 0.15);
+        }
+
+        .greeting-text {
+            color: #ffffff;
+            font-size: 24px;
+            text-align: center;
+            margin: 10px 0;
+            font-weight: 400;
+        }
+
+        .greeting-name {
+            color: #00f5a0;
+            font-weight: 700;
+            display: block;
+            margin-top: 5px;
+            font-size: 32px;
+            text-shadow: 0 0 15px rgba(0, 245, 160, 0.3);
+        }
+
+        .animate-pop {
+            animation: popInScale 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        }
+
+        /* MODE SELECTION CARDS */
+        .mode-btn {
+            font-family: 'Fredoka', sans-serif;
+            background: #0b0c16;
+            color: white;
+            border: 2px solid #2e3552;
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 12px;
+            width: 100%;
+            cursor: pointer;
+            box-sizing: border-box;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        body:not([dir="rtl"]) .mode-btn { text-align: left; }
+        body[dir="rtl"] .mode-btn { text-align: right; }
+
+        .mode-btn:hover {
+            border-color: #00f5a0;
+            background: rgba(0, 245, 160, 0.04);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .mode-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #00f5a0;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mode-desc {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.4;
+            font-weight: 300;
+        }
+
+        .link-box {
+            background-color: #0b0c16;
+            color: #00d9f5;
+            border: 1px dashed #00d9f5;
+            padding: 12px;
+            font-size: 13px;
+            border-radius: 10px;
+            word-break: break-all;
+            user-select: all;
+            margin-bottom: 15px;
+            text-align: center;
+            direction: ltr !important; 
+            font-family: 'Fredoka', sans-serif !important;
+        }
+
+        /* SIDE CHOOSER BUTTONS */
+        .side-container {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .side-btn {
+            font-family: 'Fredoka', sans-serif;
+            flex: 1;
+            background-color: #0b0c16;
+            color: #ffffff;
+            border: 2px solid #2e3552;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .side-btn:hover {
+            border-color: #414b75;
+        }
+
+        .side-btn.selected {
+            border-color: #00f5a0;
+            background-color: rgba(0, 245, 160, 0.12);
+            box-shadow: 0 0 12px rgba(0, 245, 160, 0.15);
+            color: #00f5a0;
+        }
+
+        .setup-select {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #0b0c16;
+            color: #ffffff;
+            border: 2px solid #2e3552;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 12px;
+            outline: none;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        .setup-select:focus {
+            border-color: #00f5a0;
+        }
+
+        .action-submit-btn {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #00f5a0 0%, #00d9f5 100%);
+            color: #090d16;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 14px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            box-shadow: 0 4px 20px rgba(0, 245, 160, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .action-submit-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 25px rgba(0, 245, 160, 0.45);
+        }
+
+        .action-submit-btn:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+            box-shadow: none;
+            color: #ffffff;
+        }
+
+        /* GLOBAL LANGUAGE PICKER CONTAINER */
+        .language-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            width: 90vw;
+            max-width: 440px;
+            box-sizing: border-box;
+            z-index: 105;
+        }
+
+        .lang-select {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #1b1f32;
+            color: #94a3b8;
+            border: 1px solid #2e3552;
+            padding: 6px 12px;
+            font-size: 13px;
+            border-radius: 8px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        /* --- GAMEPLAY MAIN VIEWPORT LAYOUT --- */
+        .game-container {
+            display: none; 
+            flex-direction: column;
+            align-items: center;
+            width: 95vw;
+            max-width: 1100px;
+        }
+
+        .arena-workspace {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 24px;
+            width: 100%;
+        }
+
+        @media (max-width: 850px) {
+            .arena-workspace {
+                flex-direction: column;
+                align-items: center;
+            }
+            .coach-panel {
+                width: 90vw !important;
+                max-width: 550px !important;
+                height: 240px !important;
+            }
+        }
+
+        .board-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .control-panel {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #1b1f32 0%, #121424 100%);
+            padding: 12px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 245, 160, 0.15);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            width: 90vw;
+            max-width: 550px;
+            box-sizing: border-box;
+        }
+
+        .panel-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            gap: 15px;
+        }
+
+        .selector-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-panel label {
+            color: #94a3b8;
+            font-weight: 500;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .bot-selector {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #0b0c16;
+            color: #ffffff;
+            border: 2px solid #00f5a0;
+            padding: 6px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 10px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #242942;
+            color: #e2e8f0;
+            border: 1px solid #3b446e;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background-color: #2e3554;
+            color: #ffffff;
+            border-color: #4e598c;
+        }
+
+        .action-btn.danger {
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+        .action-btn.danger:hover {
+            background-color: #991b1b;
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+
+        #myBoard {
+            width: 90vw;       
+            max-width: 550px;  
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(0, 245, 160, 0.2);
+        }
+
+        /* --- COACH REAL-TIME CHAT PANEL --- */
+        .coach-panel {
+            display: none; 
+            flex-direction: column;
+            width: 380px;
+            height: 608px;
+            background: linear-gradient(135deg, #1b1f32 0%, #121424 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 217, 245, 0.2);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .coach-header {
+            background: rgba(11, 12, 22, 0.4);
+            padding: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .coach-avatar {
+            font-size: 26px;
+            background: rgba(0, 217, 245, 0.1);
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 1px solid #00d9f5;
+        }
+
+        .coach-meta h4 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .coach-meta span {
+            color: #00d9f5;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .coach-chat-history {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chat-bubble {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 14px;
+            font-size: 13.5px;
+            line-height: 1.4;
+        }
+
+        .chat-bubble.coach {
+            background: #252a45;
+            color: #e2e8f0;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .chat-bubble.user {
+            background: linear-gradient(135deg, #00f5a0 0%, #00d9f5 100%);
+            color: #090d16;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            font-weight: 500;
+        }
+
+        .coach-input-area {
+            padding: 12px;
+            background: rgba(11, 12, 22, 0.3);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            gap: 8px;
+        }
+
+        .coach-text-field {
+            font-family: 'Fredoka', sans-serif;
+            flex: 1;
+            background: #0b0c16;
+            border: 1px solid #2e3552;
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: #ffffff;
+            font-size: 13px;
+            outline: none;
+        }
+        .coach-text-field:focus {
+            border-color: #00d9f5;
+        }
+
+        .coach-send-btn {
+            background: #00d9f5;
+            color: #090d16;
+            border: none;
+            border-radius: 10px;
+            padding: 0 16px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* --- CHECKMATE OVERLAY --- */
+        .checkmate-overlay {
+            display: none; 
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 12, 22, 0.9); 
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .checkmate-box {
+            background: #1b1f32;
+            padding: 35px 45px;
+            border-radius: 24px;
+            border: 3px solid #00f5a0; 
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(0, 245, 160, 0.2);
+            width: 80%;
+            max-width: 340px;
+            transform: scale(0);
+            animation: popInScale 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .checkmate-box h1 {
+            color: #ffffff;
+            margin: 0 0 12px 0;
+            font-size: 36px;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 245, 160, 0.3);
+        }
+
+        .checkmate-box p {
+            color: #94a3b8;
+            font-size: 16px;
+            margin: 0 0 25px 0;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+
+        .restart-btn {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #00f5a0 0%, #00d9f5 100%);
+            color: #090d16;
+            border: none;
+            padding: 14px 30px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%; 
+            box-shadow: 0 4px 15px rgba(0, 245, 160, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .restart-btn:hover {
+            box-shadow: 0 6px 20px rgba(0, 245, 160, 0.45);
+            transform: translateY(-1px);
+        }
+
+        @keyframes popInScale {
+            0% { transform: scale(0.6); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="usernameScreen" class="setup-card">
+        <h2 data-i18n="profile_title">Player Profile</h2>
+        <div class="setup-group">
+            <label for="usernameInput" data-i18n="enter_username">Enter Your Username</label>
+            <input type="text" id="usernameInput" class="username-input" placeholder="Grandmaster..." maxlength="15" oninput="validateUsernameForm()">
+        </div>
+        <button id="usernameNextBtn" class="action-submit-btn" disabled onclick="submitUsername()" data-i18n="btn_next">Next</button>
+    </div>
+
+    <div id="greetingScreen" class="setup-card hidden-panel">
+        <div class="greeting-text animate-pop">
+            <span data-i18n="welcome_arena">Welcome to the Arena,</span>
+            <span id="displayUsername" class="greeting-name">Player</span>
+        </div>
+    </div>
+
+    <div id="modeScreen" class="setup-card hidden-panel">
+        <button class="back-nav-btn" onclick="navigateToStep('username')"><span>←</span> <b data-i18n="btn_back">Back</b></button>
+        <h2 data-i18n="select_mode_title">Select Match Architecture</h2>
+        
+        <button class="mode-btn" onclick="selectMode('bot')">
+            <div class="mode-title" data-i18n="mode_bot_title">🤖 Combat Engine</div>
+            <div class="mode-desc" data-i18n="mode_bot_desc">Play locally against our variable-depth neural approximation engines. Perfect for training.</div>
+        </button>
+
+        <button class="mode-btn" onclick="selectMode('coach')">
+            <div class="mode-title" data-i18n="mode_coach_title">👨‍🏫 Train with a Coach</div>
+            <div class="mode-desc" data-i18n="mode_coach_desc">Play matching dynamic levels while an AI Grandmaster analyzes your position and chats with you.</div>
+        </button>
+
+        <button class="mode-btn" onclick="selectMode('multiplayer')">
+            <div class="mode-title" data-i18n="mode_multi_title">⚔️ Live Multiplayer</div>
+            <div class="mode-desc" data-i18n="mode_multi_desc">Generate an instant, secure pairing room link to challenge a friend anywhere in the world.</div>
+        </button>
+    </div>
+
+    <div id="setupScreen" class="setup-card hidden-panel">
+        <button class="back-nav-btn" onclick="navigateToStep('mode')"><span>←</span> <b data-i18n="btn_back">Back</b></button>
+        <h2 id="setupScreenTitle" data-i18n="match_init_title">Match Initialization</h2>
+        
+        <div class="setup-group">
+            <label data-i18n="choose_alignment">Choose Alignment</label>
+            <div class="side-container">
+                <button id="sideWhite" class="side-btn selected" onclick="selectSide('w')" data-i18n="side_white">White</button>
+                <button id="sideBlack" class="side-btn" onclick="selectSide('b')" data-i18n="side_black">Black</button>
+                <button id="sideRandom" class="side-btn" onclick="selectSide('r')" data-i18n="side_random">Random</button>
+            </div>
+        </div>
+
+        <div class="setup-group">
+            <label for="setupLevel" data-i18n="engine_level_label">Opponent Engine Level</label>
+            <select id="setupLevel" class="setup-select">
+                <option value="1" selected data-i18n="lvl_1">Level 1 (Casual Beginner)</option>
+                <option value="2" data-i18n="lvl_2">Level 2 (Tactical Normal)</option>
+                <option value="3" data-i18n="lvl_3">Level 3 (Grandmaster Mode)</option>
+            </select>
+        </div>
+
+        <button class="action-submit-btn" onclick="startGame(currentGameMode)" data-i18n="btn_start">Start Match</button>
+    </div>
+
+    <div id="multiplayerSetupScreen" class="setup-card hidden-panel">
+        <button class="back-nav-btn" onclick="navigateToStep('mode')"><span>←</span> <b data-i18n="btn_back">Back</b></button>
+        <h2 data-i18n="room_reg_title">Room Registration</h2>
+        <div class="setup-group">
+            <label data-i18n="share_link_label">Share This Invitation Link</label>
+            <div id="inviteLinkBox" class="link-box">Generating...</div>
+        </div>
+        <p style="color:#94a3b8; font-size:12px; text-align:center; margin: 0 0 15px 0;" data-i18n="share_link_desc">Send this URL to your opponent. The match will sync once they arrive.</p>
+        <button class="action-submit-btn" style="background: #242942; border:1px solid #3b446e; color: #ffffff; box-shadow: none;" onclick="copyInviteLink()" data-i18n="btn_copy">Copy Link</button>
+        <button class="action-submit-btn" onclick="startGame('multiplayer')" data-i18n="btn_launch">Launch Board Room</button>
+    </div>
+
+    <div id="globalLanguagePicker" class="language-container">
+        <select class="lang-select" onchange="changeLanguage(this.value)">
+            <option value="en" selected>🇺🇸 English (EN)</option>
+            <option value="es">🇪🇸 Español (ES)</option>
+            <option value="fr">🇫🇷 Français (FR)</option>
+            <option value="ar">🇸🇦 العربية (AR)</option>
+        </select>
+    </div>
+
+    <div id="gameContainer" class="game-container">
+        <div class="arena-workspace">
+            
+            <div class="board-wrapper">
+                <div class="control-panel">
+                    <div class="panel-row">
+                        <div class="selector-group" id="engineSelectorWrapper">
+                            <label for="botLevel" data-i18n="panel_engine_label">Opponent Engine</label>
+                            <select id="botLevel" class="bot-selector" onchange="syncEngineLevelSelector(this.value)">
+                                <option value="1" data-i18n="lvl_1">Level 1 (Casual Beginner)</option>
+                                <option value="2" data-i18n="lvl_2">Level 2 (Tactical Normal)</option>
+                                <option value="3" data-i18n="lvl_3">Level 3 (Grandmaster Mode)</option>
+                            </select>
+                        </div>
+                        <div class="selector-group hidden-panel" id="multiplayerStatusWrapper">
+                            <span style="color:#00f5a0; font-size:13px; font-weight:bold;" data-i18n="panel_live_status">● Live Multiplayer Connection</span>
+                        </div>
+                        <div class="btn-group">
+                            <button class="action-btn" id="takebackBtn" onclick="takebackMove()">⟲ <span data-i18n="btn_takeback">Takeback</span></button>
+                            <button class="action-btn danger" onclick="returnToMenu()">↻ <span data-i18n="btn_reset">Reset Setup</span></button>
+                        </div>
+                    </div>
+                </div>
+                <div id="myBoard"></div>
+            </div>
+
+            <div id="coachPanel" class="coach-panel">
+                <div class="coach-header">
+                    <div class="coach-avatar">👨‍🏫</div>
+                    <div class="coach-meta">
+                        <h4 data-i18n="coach_name">Coach Mikhail</h4>
+                        <span data-i18n="coach_status">Grandmaster Assistant</span>
+                    </div>
+                </div>
+                <div id="coachChatHistory" class="coach-chat-history"></div>
+                <div class="coach-input-area">
+                    <input type="text" id="coachTextField" class="coach-text-field" placeholder="Ask coach anything..." onkeydown="if(event.key==='Enter') submitCoachMessage()">
+                    <button class="coach-send-btn" onclick="submitCoachMessage()" data-i18n="coach_send">Send</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="checkmateOverlay" class="checkmate-overlay">
+        <div class="checkmate-box">
+            <h1 data-i18n="game_over_title">Checkmate!</h1>
+            <p id="winnerMessage">Game Over</p>
+            <button class="restart-btn" onclick="returnToMenu()" data-i18n="btn_play_again">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        var game = new Chess();
+        var board;
+        var playerColor = 'w'; 
+        var username = "Player";
+        var currentGameMode = 'bot'; 
+        var currentLang = 'en';
+        var audioCtx = null;
+        var isGuestJoining = false; // Tracks if user arrived directly from an invite link
+
+        // --- TRANSLATION MATRIX ---
+        var i18n = {
+            en: {
+                profile_title: "Player Profile",
+                enter_username: "Enter Your Username",
+                btn_next: "Next",
+                btn_back: "Back",
+                welcome_arena: "Welcome to the Arena,",
+                select_mode_title: "Select Match Architecture",
+                mode_bot_title: "🤖 Combat Engine",
+                mode_bot_desc: "Play locally against our variable-depth neural approximation engines. Perfect for training.",
+                mode_coach_title: "👨‍🏫 Train with a Coach",
+                mode_coach_desc: "Play matching dynamic levels while an AI Grandmaster analyzes your position and chats with you.",
+                mode_multi_title: "⚔️ Live Multiplayer",
+                mode_multi_desc: "Generate an instant, secure pairing room link to challenge a friend anywhere in the world.",
+                match_init_title: "Match Initialization",
+                coach_init_title: "Coach Room Config",
+                choose_alignment: "Choose Alignment",
+                side_white: "White",
+                side_black: "Black",
+                side_random: "Random",
+                engine_level_label: "Opponent Engine Level",
+                lvl_1: "Level 1 (Casual Beginner)",
+                lvl_2: "Level 2 (Tactical Normal)",
+                lvl_3: "Level 3 (Grandmaster Mode)",
+                btn_start: "Start Match",
+                room_reg_title: "Room Registration",
+                share_link_label: "Share This Invitation Link",
+                share_link_desc: "Send this URL to your opponent. The match will sync once they arrive.",
+                btn_copy: "Copy Link",
+                btn_launch: "Launch Board Room",
+                panel_engine_label: "Opponent Engine",
+                panel_live_status: "● Live Multiplayer Connection",
+                btn_takeback: "Takeback",
+                btn_reset: "Reset Setup",
+                game_over_title: "Checkmate!",
+                btn_play_again: "Play Again",
+                alert_copy: "Room connection invitation copied to clipboard!",
+                win_msg: " wins by absolute checkmate!",
+                lose_msg: "The Engine defeats ",
+                by_checkmate: " by checkmate.",
+                multi_win: "Checkmate! Victory achieved by ",
+                coach_name: "Coach Mikhail",
+                coach_status: "Grandmaster Assistant",
+                coach_send: "Send",
+                coach_placeholder: "Ask coach anything...",
+                coach_welcome: "Hello! I am your Grandmaster Coach. Let's practice. What aspect of this setup would you like to review?",
+                coach_reply_move: "Good move. Focus on maintaining control over the center board. What is your strategy for development?",
+                coach_reply_capture: "Excellent trade. Keep track of tactical structural weaknesses in their ranks.",
+                coach_reply_generic: "An interesting approach. Always watch out for hanging pieces and unexpected check vectors."
+            },
+            es: {
+                profile_title: "Perfil del Jugador",
+                enter_username: "Introduce tu Nombre de Usuario",
+                btn_next: "Siguiente",
+                btn_back: "Atrás",
+                welcome_arena: "Bienvenido a la Arena,",
+                select_mode_title: "Seleccionar Arquitectura de Partida",
+                mode_bot_title: "🤖 Motor de Combate",
+                mode_bot_desc: "Juega localmente contra nuestros motores de aproximación neuronal variables. Perfecto para entrenar.",
+                mode_coach_title: "👨‍🏫 Entrenar con un Entrenador",
+                mode_coach_desc: "Juega en niveles dinámicos tandis qu'un Gran Maestro de IA analiza tu posición y habla contigo.",
+                mode_multi_title: "⚔️ Multijugador en Vivo",
+                mode_multi_desc: "Genera un enlace de empareجamiento instantáneo y seguro para desafiar a un amigo en cualquier parte del mundo.",
+                match_init_title: "Inicialización de la Partida",
+                coach_init_title: "Configuración de Sala de Entrenamiento",
+                choose_alignment: "Elegir Bando",
+                side_white: "Blancas",
+                side_black: "Negras",
+                side_random: "Aleatorio",
+                engine_level_label: "Nivel del Motor Oponente",
+                lvl_1: "Nivel 1 (Principiante Casual)",
+                lvl_2: "Nivel 2 (Táctico Normal)",
+                lvl_3: "Nivel 3 (Modo Gran Maestro)",
+                btn_start: "Comenzar Partida",
+                room_reg_title: "Registro de la Sala",
+                share_link_label: "Comparte este Enlace de Invitación",
+                share_link_desc: "Envía esta URL a tu oponente. La partida se sincronizará cuando llegue.",
+                btn_copy: "Copiar Enlace",
+                btn_launch: "Lanzar Sala de Tablero",
+                panel_engine_label: "Motor Oponente",
+                panel_live_status: "● Conexión Multijugador en Vivo",
+                btn_takeback: "Retractarse",
+                btn_reset: "Reiniciar Ajustes",
+                game_over_title: "¡Jaque Mate!",
+                btn_play_again: "Jugar de Nuevo",
+                alert_copy: "¡Invitación de conexión de sala copiada al portapapeles!",
+                win_msg: " ¡gana por jaque mate absoluto!",
+                lose_msg: "El Motor derrota a ",
+                by_checkmate: " por jaque mate.",
+                multi_win: "¡Jaque Mate! Victoria Conseguida por las ",
+                coach_name: "Entrenador Mikhail",
+                coach_status: "Asistente Gran Maestro",
+                coach_send: "Enviar",
+                coach_placeholder: "Pregúntale al entrenador...",
+                coach_welcome: "¡Hola! Soy tu entrenador de Gran Maestro. Practiquemos. ¿Qué aspecto de esta posición quieres repasar?",
+                coach_reply_move: "Buen movimiento. Concéntrate en mantener el control del centro del tablero. ¿Cuál es tu plan de desarrollo?",
+                coach_reply_capture: "Excelente captura. Monitorea las debilidades estructurales tácticas en sus filas.",
+                coach_reply_generic: "Un enfoque interesante. Siempre ten cuidado con las piezas desprotegidas y los vectores de jaque inesperados."
+            },
+            fr: {
+                profile_title: "Profil du Joueur",
+                enter_username: "Entrez votre nom d'utilisateur",
+                btn_next: "Suivant",
+                btn_back: "Retour",
+                welcome_arena: "Bienvenue dans l'Arène,",
+                select_mode_title: "Sélectionner le Mode de Jeu",
+                mode_bot_title: "🤖 Moteur de Combat",
+                mode_bot_desc: "Jouez localement contre nos moteurs d'approximation neuronale à profondeur variable. Idéal pour l'entraînement.",
+                mode_coach_title: "👨‍🏫 S'entraîner avec un Coach",
+                mode_coach_desc: "Jouez à des niveaux dynamiques tandis qu'un Grand Maître IA analyse votre position et discute avec vous.",
+                mode_multi_title: "⚔️ Multijoueur en Direct",
+                mode_multi_desc: "Générez un lien de salon instantané et sécurisé pour défier un ami partout dans le monde.",
+                match_init_title: "Initialisation du Match",
+                coach_init_title: "Configuration Salle d'Entraînement",
+                choose_alignment: "Choisir l'Alignement",
+                side_white: "Blancs",
+                side_black: "Noirs",
+                side_random: "Aléatoire",
+                engine_level_label: "Niveau du Moteur Adverse",
+                lvl_1: "Niveau 1 (Débutant Casual)",
+                lvl_2: "Niveau 2 (Tactique Normal)",
+                lvl_3: "Niveau 3 (Mode Grand Maître)",
+                btn_start: "Démarrer le Match",
+                room_reg_title: "Enregistrement du Salon",
+                share_link_label: "Partager ce Lien d'Invitation",
+                share_link_desc: "Envoyez cette URL à votre adversaire. Le match se synchronisera dès son arrivée.",
+                btn_copy: "Copier le Lien",
+                btn_launch: "Lancer le Salon de Jeu",
+                panel_engine_label: "Moteur Adverse",
+                panel_live_status: "● Connexion Multijoueur en Direct",
+                btn_takeback: "Annuler le coup",
+                btn_reset: "Réinitialiser",
+                game_over_title: "Échec et Mat !",
+                btn_play_again: "Rejouer",
+                alert_copy: "Invitation de connexion copiée dans le presse-papiers !",
+                win_msg: " gagne par échec et mat absolu !",
+                lose_msg: "Le Moteur bat ",
+                by_checkmate: " par échec et mat.",
+                multi_win: "Échec et Mat ! Victoire remportée par les ",
+                coach_name: "Coach Mikhail",
+                coach_status: "Assistant Grand Maître",
+                coach_send: "Envoyer",
+                coach_placeholder: "Demander au coach...",
+                coach_welcome: "Bonjour ! Je suis votre coach Grand Maître. Entraînons-nous. Quel aspect de cette position aimeriez-vous analyser ?",
+                coach_reply_move: "Bon coup. Concentrez-vous sur le contrôle du centre de l'échiquier. Quelle est votre stratégie de développement ?",
+                coach_reply_capture: "Excellente capture. Restez attentif aux faiblesses tactiques structurelles de son camp.",
+                coach_reply_generic: "Une approche intéressante. Faites toujours attention aux pièces non protégées et aux axes d'échec imprévus."
+            },
+            ar: {
+                profile_title: "ملف اللاعب",
+                enter_username: "أدخل اسم المستخدم الخاص بك",
+                btn_next: "التالي",
+                btn_back: "رجوع",
+                welcome_arena: "مرحباً بك في الساحة،",
+                select_mode_title: "اختر نظام المباراة",
+                mode_bot_title: "🤖 محرك القتال (الذكاء الاصطناعي)",
+                mode_bot_desc: "العب محلياً ضد محركات التقريب العصبي متغيرة العمق الخاصة بنا. مثالي للتدريب.",
+                mode_coach_title: "👨‍🏫 التدريب مع مدرب آلي",
+                mode_coach_desc: "العب في مستويات مختلفة بينما يقوم مدرب أستاذ كبير بالذكاء الاصطناعي بتحليل موقفك والتحدث معك مباشرة.",
+                mode_multi_title: "⚔️ مواجهة مباشرة (متعدد اللاعبين)",
+                mode_multi_desc: "قم بإنشاء رابط غرفة اقتران فوري وآمن لتحدي صديق في أي مكان في العالم.",
+                match_init_title: "إعداد المباراة",
+                coach_init_title: "إعداد غرفة التدريب",
+                choose_alignment: "اختر لون اللعب",
+                side_white: "الأبيض",
+                side_black: "الأسود",
+                side_random: "عشوائي",
+                engine_level_label: "مستوى محرك الخصم",
+                lvl_1: "المستوى 1 (مبتدئ)",
+                lvl_2: "المستوى 2 (عادي/تكتيكي)",
+                lvl_3: "المستوى 3 (نمط الأستاذ الكبير)",
+                btn_start: "بدء المباراة",
+                room_reg_title: "تسجيل الغرفة",
+                share_link_label: "شارك رابط الدعوة هذا",
+                share_link_desc: "أرسل هذا الرابط إلى خصمك. ستتم مزامنة المباراة بمجرد دخوله.",
+                btn_copy: "نسخ الرابط",
+                btn_launch: "إطلاق غرفة اللعب",
+                panel_engine_label: "محرك الخصم",
+                panel_live_status: "● اتصال مباشر متعدد اللاعبين",
+                btn_takeback: "تراجع عن الخطوة",
+                btn_reset: "إعادة تعيين الإعدادات",
+                game_over_title: "كش ملك! (كش مات)",
+                btn_play_again: "العب مجدداً",
+                alert_copy: "تم نسخ رابط دعوة الغرفة إلى الحافظة!",
+                win_msg: " يفوز بالمباراة بكش ملك قاتل!",
+                lose_msg: "الكمبيوتر يهزم ",
+                by_checkmate: " عن طريق كش ملك.",
+                multi_win: "كش ملك! تحقق النصر لصالح اللون ",
+                coach_name: "المدرب ميخائيل",
+                coach_status: "مساعد الأستاذ الكبير",
+                coach_send: "إرسال",
+                coach_placeholder: "اسأل المدرب أي شيء...",
+                coach_welcome: "مرحباً! أنا مدربك الخاص برتبة أستاذ كبير. فلنتدرب معاً. ما هو الجانب الذي تود مراجعته في هذا التوزيع؟",
+                coach_reply_move: "نقلة جيدة. ركّز على إبقاء السيطرة على مركز الرقعة. ما هي استراتيجيتك للتطوير؟",
+                coach_reply_capture: "أخذ ممتاز للقطعة. تابع نقاط الضعف التكتيكية الهيكلية في صفوف خصمك.",
+                coach_reply_generic: "أسلوب مثير للاهتمام. احذر دائماً من القطع المعلقة غير المحمية ومسارات الكش المفاجئة."
+            }
+        };
+
+        function changeLanguage(langCode) {
+            currentLang = langCode;
+            
+            if (langCode === 'ar') {
+                document.body.setAttribute('dir', 'rtl');
+            } else {
+                document.body.removeAttribute('dir');
+            }
+
+            $('[data-i18n]').each(function() {
+                var key = $(this).data('i18n');
+                if (i18n[currentLang] && i18n[currentLang][key]) {
+                    if ($(this).is('input')) {
+                        $(this).attr('placeholder', i18n[currentLang][key]);
+                    } else {
+                        $(this).text(i18n[currentLang][key]);
+                    }
+                }
+            });
+
+            var pText = i18n[currentLang]['coach_placeholder'] || "Ask coach anything...";
+            document.getElementById('coachTextField').setAttribute('placeholder', pText);
+        }
+
+        // --- NAVIGATION HANDLER MANAGEMENT ---
+        function navigateToStep(step) {
+            document.getElementById('usernameScreen').classList.add('hidden-panel');
+            document.getElementById('modeScreen').classList.add('hidden-panel');
+            document.getElementById('setupScreen').classList.add('hidden-panel');
+            document.getElementById('multiplayerSetupScreen').classList.add('hidden-panel');
+
+            if (step === 'username') {
+                document.getElementById('usernameScreen').classList.remove('hidden-panel');
+            } else if (step === 'mode') {
+                document.getElementById('modeScreen').classList.remove('hidden-panel');
+            }
+        }
+
+        var pieceWeights = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 20000 };
+
+        var pawnEval = [
+            [0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0],
+            [5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0],
+            [1.0,  1.0,  2.0,  3.0,  3.0,  2.0,  1.0,  1.0],
+            [0.5,  0.5,  1.0,  2.5,  2.5,  1.0,  0.5,  0.5],
+            [0.0,  0.0,  0.0,  2.0,  2.0,  0.0,  0.0,  0.0],
+            [0.5, -0.5, -1.0,  0.0,  0.0, -1.0, -0.5,  0.5],
+            [0.5,  1.0,  1.0, -2.0, -2.0,  1.0,  1.0,  0.5],
+            [0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0]
+        ];
+
+        var knightEval = [
+            [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0],
+            [-4.0, -2.0,  0.0,  0.0,  0.0,  0.0, -2.0, -4.0],
+            [-3.0,  0.0,  1.0,  1.5,  1.5,  1.0,  0.0, -3.0],
+            [-3.0,  0.5,  1.5,  2.0,  2.0,  1.5,  0.5, -3.0],
+            [-3.0,  0.0,  1.5,  2.0,  2.0,  1.5,  0.0, -3.0],
+            [-3.0,  0.5,  1.0,  1.5,  1.5,  1.0,  0.5, -3.0],
+            [-4.0, -2.0,  0.0,  0.5,  0.5,  0.0, -2.0, -4.0],
+            [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0]
+        ];
+
+        var bishopEval = [
+            [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0],
+            [-1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0],
+            [-1.0,  0.0,  0.5,  1.0,  1.0,  0.5,  0.0, -1.0],
+            [-1.0,  0.5,  0.5,  1.0,  1.0,  0.5,  0.5, -1.0],
+            [-1.0,  0.0,  1.0,  1.0,  1.0,  1.0,  0.0, -1.0],
+            [-1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0, -1.0],
+            [-1.0,  0.5,  0.0,  0.0,  0.0,  0.0,  0.5, -1.0],
+            [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0]
+        ];
+
+        var rookEval = [
+            [0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0],
+            [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+            [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+            [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+            [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+            [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+            [5.0,  10.0, 10.0, 10.0, 10.0, 10.0, 10.0,  5.0],
+            [0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0]
+        ];
+
+        var queenEval = [
+            [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0],
+            [-1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0],
+            [-1.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0],
+            [-0.5,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5],
+            [0.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5],
+            [-1.0,  0.5,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0],
+            [-1.0,  0.0,  0.5,  0.0,  0.0,  0.0,  0.0, -1.0],
+            [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0]
+        ];
+
+        var kingEval = [
+            [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+            [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+            [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+            [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+            [-2.0, -3.0, -3.0, -4.0, -4.0, -3.0, -3.0, -2.0],
+            [-1.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0],
+            [2.0,  2.0,  0.0,  0.0,  0.0,  0.0,  2.0,  2.0],
+            [2.0,  3.0,  1.0,  0.0,  0.0,  1.0,  3.0,  2.0]
+        ];
+
+        window.addEventListener('DOMContentLoaded', (event) => {
+            // Check if the user is loading an actual invite hash from a friend
+            if (window.location.hash && window.location.hash.includes('room-')) {
+                currentGameMode = 'multiplayer';
+                playerColor = 'b'; 
+                isGuestJoining = true;
+            }
+            changeLanguage('en');
+        });
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            initAudio();
+            if (!audioCtx) return;
+
+            let osc = audioCtx.createOscillator();
+            let gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            let now = audioCtx.currentTime;
+
+            if (type === 'move') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(120, now);
+                osc.frequency.exponentialRampToValueAtTime(80, now + 0.08);
+                gainNode.gain.setValueAtTime(0.6, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            } 
+            else if (type === 'capture') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(280, now);
+                osc.frequency.exponentialRampToValueAtTime(60, now + 0.12);
+                gainNode.gain.setValueAtTime(0.7, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                osc.start(now);
+                osc.stop(now + 0.12);
+            } 
+            else if (type === 'checkmate') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.setValueAtTime(300, now + 0.15);
+                gainNode.gain.setValueAtTime(0.4, now);
+                gainNode.gain.linearRampToValueAtTime(0.3, now + 0.15);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                osc.start(now);
+                osc.stop(now + 0.6);
+            }
+        }
+
+        function validateUsernameForm() {
+            var value = document.getElementById('usernameInput').value.trim();
+            document.getElementById('usernameNextBtn').disabled = (value.length === 0);
+        }
+
+        // --- FIXED SUBMIT ROUTING ENGINE ---
+        function submitUsername() {
+            username = document.getElementById('usernameInput').value.trim();
+            document.getElementById('displayUsername').innerText = username;
+
+            document.getElementById('usernameScreen').classList.add('hidden-panel');
+            document.getElementById('greetingScreen').classList.remove('hidden-panel');
+
+            initAudio();
+
+            window.setTimeout(function() {
+                document.getElementById('greetingScreen').classList.add('hidden-panel');
+                
+                // Fixed condition: Only branch to invite link parameters if they are an incoming guest
+                if (isGuestJoining) {
+                    document.getElementById('multiplayerSetupScreen').classList.remove('hidden-panel');
+                } else {
+                    document.getElementById('modeScreen').classList.remove('hidden-panel');
+                }
+            }, 2200);
+        }
+
+        function selectMode(mode) {
+            currentGameMode = mode;
+            document.getElementById('modeScreen').classList.add('hidden-panel');
+            
+            if (mode === 'bot' || mode === 'coach') {
+                var labelKey = (mode === 'coach') ? "coach_init_title" : "match_init_title";
+                document.getElementById('setupScreenTitle').innerText = i18n[currentLang][labelKey];
+                document.getElementById('setupScreen').classList.remove('hidden-panel');
+            } else {
+                // Link generates cleanly only when explicit action is taken
+                generateInviteRoomLink();
+                document.getElementById('multiplayerSetupScreen').classList.remove('hidden-panel');
+            }
+        }
+
+        function generateInviteRoomLink() {
+            var roomId = Math.random().toString(36).substring(2, 9);
+            window.location.hash = 'room-' + roomId;
+            playerColor = 'w'; 
+            document.getElementById('inviteLinkBox').innerText = window.location.href;
+        }
+
+        function copyInviteLink() {
+            var linkText = document.getElementById('inviteLinkBox').innerText;
+            navigator.clipboard.writeText(linkText).then(() => {
+                alert(i18n[currentLang].alert_copy);
+            });
+        }
+
+        function selectSide(color) {
+            $('.side-btn').removeClass('selected');
+            if (color === 'w') $('#sideWhite').addClass('selected');
+            if (color === 'b') $('#sideBlack').addClass('selected');
+            if (color === 'r') $('#sideRandom').addClass('selected');
+            playerColor = color;
+        }
+
+        function syncEngineLevelSelector(val) {
+            document.getElementById('setupLevel').value = val;
+            document.getElementById('botLevel').value = val;
+        }
+
+        function startGame(mode) {
+            document.getElementById('globalLanguagePicker').style.display = 'none';
+            document.getElementById('coachChatHistory').innerHTML = '';
+
+            if (mode === 'bot' || mode === 'coach') {
+                var selectedLevel = document.getElementById('setupLevel').value;
+                document.getElementById('botLevel').value = selectedLevel;
+                document.getElementById('engineSelectorWrapper').classList.remove('hidden-panel');
+                document.getElementById('multiplayerStatusWrapper').classList.add('hidden-panel');
+                document.getElementById('takebackBtn').style.display = 'inline-block';
+                document.getElementById('setupScreen').classList.add('hidden-panel');
+                
+                if(mode === 'coach') {
+                    document.getElementById('coachPanel').style.display = 'flex';
+                    pushCoachChatBubble(i18n[currentLang]['coach_welcome'] || "Hello! Let's train.", 'coach');
+                } else {
+                    document.getElementById('coachPanel').style.display = 'none';
+                }
+            } else {
+                document.getElementById('engineSelectorWrapper').classList.add('hidden-panel');
+                document.getElementById('multiplayerStatusWrapper').classList.remove('hidden-panel');
+                document.getElementById('takebackBtn').style.display = 'none'; 
+                document.getElementById('multiplayerSetupScreen').classList.add('hidden-panel');
+                document.getElementById('coachPanel').style.display = 'none';
+            }
+
+            if (playerColor === 'r') {
+                playerColor = Math.random() < 0.5 ? 'w' : 'b';
+            }
+
+            var alignmentOrientation = (playerColor === 'w') ? 'white' : 'black';
+            document.getElementById('gameContainer').style.display = 'flex';
+
+            game.reset();
+            
+            board = Chessboard('myBoard', {
+                draggable: true,
+                position: 'start',
+                orientation: alignmentOrientation,
+                onDragStart: onDragStart,
+                onDrop: onDrop,
+                onSnapEnd: onSnapEnd,
+                pieceTheme: function (piece) {
+                    return 'https://upload.wikimedia.org/wikipedia/commons/' + getPiecePath(piece) + '.svg';
+                }
+            });
+
+            board.resize();
+
+            if ((mode === 'bot' || mode === 'coach') && playerColor === 'b') {
+                window.setTimeout(makeEngineMove, 400);
+            }
+        }
+
+        function returnToMenu() {
+            // Strip clean location details on reset context
+            history.pushState("", document.title, window.location.pathname + window.location.search);
+            playerColor = 'w';
+            isGuestJoining = false;
+
+            document.getElementById('checkmateOverlay').style.display = 'none';
+            document.getElementById('gameContainer').style.display = 'none';
+            document.getElementById('globalLanguagePicker').style.display = 'flex';
+            
+            document.getElementById('setupScreen').classList.add('hidden-panel');
+            document.getElementById('multiplayerSetupScreen').classList.add('hidden-panel');
+            document.getElementById('modeScreen').classList.remove('hidden-panel');
+        }
+
+        function pushCoachChatBubble(text, sender) {
+            var wrapper = document.getElementById('coachChatHistory');
+            var bubble = document.createElement('div');
+            bubble.classList.add('chat-bubble', sender);
+            bubble.innerText = text;
+            wrapper.appendChild(bubble);
+            wrapper.scrollTop = wrapper.scrollHeight;
+        }
+
+        function submitCoachMessage() {
+            var field = document.getElementById('coachTextField');
+            var userText = field.value.trim();
+            if(!userText) return;
+
+            pushCoachChatBubble(userText, 'user');
+            field.value = '';
+
+            window.setTimeout(function() {
+                var response = i18n[currentLang]['coach_reply_generic'];
+                pushCoachChatBubble(response, 'coach');
+            }, 800);
+        }
+
+        function getPieceValue(piece, x, y) {
+            if (piece === null) return 0;
+            var absValue = pieceWeights[piece.type];
+            var positionalValue = 0;
+
+            if (piece.type === 'p') positionalValue = pawnEval[x][y];
+            else if (piece.type === 'r') positionalValue = rookEval[x][y];
+            else if (piece.type === 'n') positionalValue = knightEval[x][y];
+            else if (piece.type === 'b') positionalValue = bishopEval[x][y];
+            else if (piece.type === 'q') positionalValue = queenEval[x][y];
+            else if (piece.type === 'k') positionalValue = kingEval[x][y];
+
+            var isEngineColorWhite = (playerColor === 'b');
+            if (isEngineColorWhite) {
+                return piece.color === 'b' ? -(absValue + positionalValue * 10) : (absValue + positionalValue * 10);
+            } else {
+                return piece.color === 'w' ? -(absValue + positionalValue * 10) : (absValue + positionalValue * 10);
+            }
+        }
+
+        function evaluateBoard(boardState) {
+            var totalEvaluation = 0;
+            for (var i = 0; i < 8; i++) {
+                for (var j = 0; j < 8; j++) {
+                    totalEvaluation += getPieceValue(boardState[i][j], i, j);
+                }
+            }
+            return totalEvaluation;
+        }
+
+        function minimax(depth, isMaximizing, alpha, beta) {
+            if (depth === 0) return evaluateBoard(game.board());
+            var possibleMoves = game.moves({ verbose: true });
+            
+            possibleMoves.sort((a, b) => (b.captured ? 1 : 0) - (a.captured ? 1 : 0));
+
+            if (isMaximizing) {
+                var bestMoveValue = -9999;
+                for (var i = 0; i < possibleMoves.length; i++) {
+                    game.move(possibleMoves[i]);
+                    bestMoveValue = Math.max(bestMoveValue, minimax(depth - 1, !isMaximizing, alpha, beta));
+                    game.undo();
+                    alpha = Math.max(alpha, bestMoveValue);
+                    if (beta <= alpha) return bestMoveValue;
+                }
+                return bestMoveValue;
+            } else {
+                var bestMoveValue = 9999;
+                for (var i = 0; i < possibleMoves.length; i++) {
+                    game.move(possibleMoves[i]);
+                    bestMoveValue = Math.min(bestMoveValue, minimax(depth - 1, !isMaximizing, alpha, beta));
+                    game.undo();
+                    beta = Math.min(beta, bestMoveValue);
+                    if (beta <= alpha) return bestMoveValue;
+                }
+                return bestMoveValue;
+            }
+        }
+
+        function onDragStart (source, piece, position, orientation) {
+            if (game.game_over()) return false;
+            
+            if (playerColor === 'w' && piece.search(/^b/) !== -1) return false;
+            if (playerColor === 'b' && piece.search(/^w/) !== -1) return false;
+
+            if (currentGameMode === 'multiplayer') {
+                if ((playerColor === 'w' && game.turn() === 'b') || (playerColor === 'b' && game.turn() === 'w')) {
+                    return false;
+                }
+            }
+        }
+
+        // Drop Action
+        function onDrop (source, target) {
+            var move = game.move({
+                from: source,
+                to: target,
+                promotion: 'q' 
+            });
+
+            if (move === null) return 'snapback';
+
+            if (move.captured) {
+                playSound('capture');
+                if (currentGameMode === 'coach') {
+                    pushCoachChatBubble(i18n[currentLang]['coach_reply_capture'], 'coach');
+                }
+            } else {
+                playSound('move');
+                if (currentGameMode === 'coach' && Math.random() < 0.6) {
+                    pushCoachChatBubble(i18n[currentLang]['coach_reply_move'], 'coach');
+                }
+            }
+
+            if (currentGameMode === 'bot' || currentGameMode === 'coach') {
+                window.setTimeout(makeEngineMove, 250);
+            }
+        }
+
+        function onSnapEnd () {
+            board.position(game.fen());
+            checkGameStatus();
+        }
+
+        function makeEngineMove() {
+            var possibleMoves = game.moves({ verbose: true });
+            if (possibleMoves.length === 0) return;
+
+            var selectedMove;
+            var currentLevel = document.getElementById('botLevel').value;
+
+            if (currentLevel === "1") {
+                if (Math.random() < 0.35) {
+                    var randomIdx = Math.floor(Math.random() * possibleMoves.length);
+                    selectedMove = possibleMoves[randomIdx];
+                } else {
+                    var bestMove = null;
+                    var bestValue = -9999;
+                    possibleMoves.sort(() => Math.random() - 0.5);
+
+                    for (var i = 0; i < possibleMoves.length; i++) {
+                        var move = possibleMoves[i];
+                        game.move(move);
+                        var value = minimax(1, false, -10000, 10000);
+                        game.undo();
+
+                        if (value >= bestValue) {
+                            bestValue = value;
+                            bestMove = move;
+                        }
+                    }
+                    selectedMove = bestMove;
+                }
+            } 
+            else if (currentLevel === "2") {
+                var bestMove = null;
+                var bestValue = -9999;
+                possibleMoves.sort(() => Math.random() - 0.5);
+
+                for (var i = 0; i < possibleMoves.length; i++) {
+                    var move = possibleMoves[i];
+                    game.move(move);
+                    var value = minimax(1, false, -10000, 10000);
+                    game.undo();
+
+                    if (value >= bestValue) {
+                        bestValue = value;
+                        bestMove = move;
+                    }
+                }
+                selectedMove = bestMove;
+            } 
+            else {
+                var bestMove = null;
+                var bestValue = -9999;
+                possibleMoves.sort((a, b) => (b.captured ? 1 : 0) - (a.captured ? 1 : 0));
+
+                for (var i = 0; i < possibleMoves.length; i++) {
+                    var move = possibleMoves[i];
+                    game.move(move);
+                    var value = minimax(3, false, -10000, 10000);
+                    game.undo();
+                    
+                    if (value >= bestValue) {
+                        bestValue = value;
+                        bestMove = move;
+                    }
+                }
+                selectedMove = bestMove;
+            }
+
+            var engineResult = game.move(selectedMove);
+            board.position(game.fen());
+
+            if (engineResult && engineResult.captured) {
+                playSound('capture');
+            } else {
+                playSound('move');
+            }
+
+            checkGameStatus();
+        }
+
+        function takebackMove() {
+            if (currentGameMode === 'multiplayer') return; 
+            game.undo();
+            game.undo();
+            board.position(game.fen());
+            playSound('move');
+            document.getElementById('checkmateOverlay').style.display = 'none';
+        }
+
+        function checkGameStatus() {
+            if (game.in_checkmate()) {
+                playSound('checkmate');
+                var loser = game.turn() === 'w' ? 'White' : 'Black';
+                var winner = loser === 'White' ? 'Black' : 'White';
+                
+                var labelWinner = winner === 'White' ? i18n[currentLang].side_white : i18n[currentLang].side_black;
+
+                var announcement = "";
+                if (currentGameMode === 'bot' || currentGameMode === 'coach') {
+                    announcement = (winner === 'White' && playerColor === 'w') || (winner === 'Black' && playerColor === 'b') 
+                        ? username + i18n[currentLang].win_msg
+                        : i18n[currentLang].lose_msg + username + i18n[currentLang].by_checkmate;
+                } else {
+                    announcement = i18n[currentLang].multi_win + labelWinner + ".";
+                }
+
+                document.getElementById('winnerMessage').innerText = announcement;
+                document.getElementById('checkmateOverlay').style.display = 'flex';
+            }
+        }
+
+        function getPiecePath(piece) {
+            var paths = {
+                'wP': '4/45/Chess_plt45', 'wR': '7/72/Chess_rlt45', 'wN': '7/70/Chess_nlt45',
+                'wB': 'b/b1/Chess_blt45', 'wQ': '1/15/Chess_qlt45', 'wK': '4/42/Chess_klt45',
+                'bP': 'c/c7/Chess_pdt45', 'bR': 'f/ff/Chess_rdt45', 'bN': 'e/ef/Chess_ndt45',
+                'bB': '9/98/Chess_bdt45', 'bQ': '4/47/Chess_qdt45', 'bK': 'f/f0/Chess_kdt45'
+            };
+            return paths[piece];
+        }
+
+        $(window).resize(function() {
+            if (board) board.resize();
+        });
+    </script>
+</body>
+</html>
