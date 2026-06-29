@@ -1179,21 +1179,26 @@
             changeLanguage('en');
         });
 
+        // --- MOBILE ACCESSIBLE AUDIO UNLOCK IMPLEMENTATION ---
         function initAudio() {
             if (!audioCtx) {
+                // Instantiates context under physical user input handler context
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 musicGainNode = audioCtx.createGain();
                 musicGainNode.gain.setValueAtTime(0.0, audioCtx.currentTime);
                 musicGainNode.connect(audioCtx.destination);
             }
+            // Explicitly force state resumption if mobile hardware suspends context initially
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
         }
 
-        // --- NEW CHILL RELAXATION GENERATIVE AMBIENT TRACK ---
         var ambientChords = [
-            [65.41, 130.81, 196.00, 293.66, 392.00, 587.33], // Deep C Major 9 (Shimmering, Starry Ambient)
-            [73.42, 146.83, 220.00, 311.13, 440.00, 622.25], // Deep D Minor 9 (Airy, Deep concentration)
-            [58.27, 116.54, 174.61, 261.63, 349.23, 523.25], // Deep Bb Major 9 (Expansive, Zero-gravity)
-            [65.41, 130.81, 196.00, 261.63, 392.00, 523.25]  // Deep Csus4 to Resolution
+            [65.41, 130.81, 196.00, 293.66, 392.00, 587.33], 
+            [73.42, 146.83, 220.00, 311.13, 440.00, 622.25], 
+            [58.27, 116.54, 174.61, 261.63, 349.23, 523.25], 
+            [65.41, 130.81, 196.00, 261.63, 392.00, 523.25]  
         ];
 
         function playAmbientPadChord() {
@@ -1207,15 +1212,11 @@
                 var osc = audioCtx.createOscillator();
                 var chordGain = audioCtx.createGain();
                 
-                // Mix subtle sine foundations with high-tier triangle textures for luxury space sound
                 osc.type = (idx > 3) ? 'triangle' : 'sine';
                 osc.frequency.setValueAtTime(freq, now);
-                
-                // Add tiny detune fluctuations for cinematic, organic texture
                 osc.detune.setValueAtTime((Math.random() * 6) - 3, now);
                 
                 chordGain.gain.setValueAtTime(0.0, now);
-                // Lower notes get steady ground presence, higher textures gently whisper
                 var targetVolume = (idx > 3) ? 0.02 : 0.05;
                 
                 chordGain.gain.linearRampToValueAtTime(targetVolume, now + 2.0); 
@@ -1231,7 +1232,7 @@
         }
 
         function toggleBackgroundMusic() {
-            initAudio();
+            initAudio(); // Hardware trigger link
             var btn = document.getElementById('musicToggleBtn');
 
             if (!isMusicPlaying) {
@@ -1243,7 +1244,8 @@
                 btn.innerHTML = "🎵 " + (i18n[currentLang][txtKey] || "Music On");
 
                 playAmbientPadChord();
-                musicInterval = window.setInterval(playAmbientPadChord, 7500); // Slower, deeper loops
+                if(musicInterval) window.clearInterval(musicInterval);
+                musicInterval = window.setInterval(playAmbientPadChord, 7500); 
             } else {
                 isMusicPlaying = false;
                 if(musicInterval) {
@@ -1259,8 +1261,8 @@
         }
 
         function playSound(type) {
-            initAudio();
-            if (!audioCtx) return;
+            initAudio(); // Hardware trigger link
+            if (!audioCtx || audioCtx.state === 'suspended') return;
 
             let osc = audioCtx.createOscillator();
             let gainNode = audioCtx.createGain();
@@ -1305,13 +1307,16 @@
         }
 
         function submitUsername() {
+            // First core physical click/tap from mobile player occurs here.
+            // This safely forces audio layer creation and unlocks device channels.
+            initAudio(); 
+            
             username = document.getElementById('usernameInput').value.trim();
             document.getElementById('displayUsername').innerText = username;
 
             document.getElementById('usernameScreen').classList.add('hidden-panel');
             document.getElementById('greetingScreen').classList.remove('hidden-panel');
 
-            initAudio();
             if(!isMusicPlaying) {
                 toggleBackgroundMusic();
             }
@@ -1369,6 +1374,7 @@
         }
 
         function startGame(mode) {
+            initAudio(); // Fallback hardware sync pass
             document.getElementById('globalLanguagePicker').style.display = 'none';
             document.getElementById('coachChatHistory').innerHTML = '';
 
@@ -1511,7 +1517,7 @@
                     game.move(possibleMoves[i]);
                     bestMoveValue = Math.min(bestMoveValue, minimax(depth - 1, !isMaximizing, alpha, beta));
                     game.undo();
-                    beta = Math.min(beta, bestMoveValue);
+                    beta = Math.min(bestMoveValue);
                     if (beta <= alpha) return bestMoveValue;
                 }
                 return bestMoveValue;
