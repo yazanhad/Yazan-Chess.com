@@ -27,90 +27,102 @@
             font-family: 'Fredoka', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
             touch-action: none;
-            position: relative;
         }
 
+        /* Swaps smoothly to the fun matching Cairo font when layout direction is set to RTL */
         body[dir="rtl"] {
             font-family: 'Cairo', sans-serif;
         }
 
+        /* Ensure input elements inherit the active layout font */
         body[dir="rtl"] input, 
         body[dir="rtl"] select, 
         body[dir="rtl"] button {
             font-family: 'Cairo', sans-serif;
         }
 
-        /* --- GLOBAL TOP ACTIONS OVERLAY PANEL --- */
-        .global-top-bar {
+        /* --- AUTH LOGIN SYSTEM STYLES --- */
+        .auth-overlay {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #141624 0%, #08090f 100%);
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            z-index: 2000;
-            pointer-events: none;
+            z-index: 5000;
         }
 
-        .global-top-bar > * {
-            pointer-events: auto;
+        .auth-toggle-tabs {
+            display: flex;
+            width: 100%;
+            margin-bottom: 25px;
+            background: #090a12;
+            border-radius: 14px;
+            padding: 4px;
+            border: 1px solid #232942;
         }
 
-        .global-music-btn {
-            font-family: 'Fredoka', sans-serif;
-            background: rgba(27, 31, 50, 0.85);
-            color: #94a3b8;
-            border: 1px solid #2e3552;
-            padding: 8px 16px;
-            font-size: 13px;
+        .auth-tab {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #74859d;
+            padding: 12px;
+            font-size: 14px;
             font-weight: 600;
-            border-radius: 12px;
             cursor: pointer;
-            backdrop-filter: blur(8px);
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            border-radius: 10px;
+            font-family: 'Fredoka', sans-serif;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        body[dir="rtl"] .global-music-btn {
+        body[dir="rtl"] .auth-tab {
             font-family: 'Cairo', sans-serif;
         }
 
-        .global-music-btn:hover {
-            color: #ffffff;
-            border-color: #00d9f5;
-            background: rgba(0, 217, 245, 0.08);
-            transform: translateY(-1px);
+        .auth-tab.active {
+            background: linear-gradient(135deg, #00f5a0 0%, #00d9f5 100%);
+            color: #05070b;
+            box-shadow: 0 4px 15px rgba(0, 245, 160, 0.2);
         }
 
-        .global-music-btn.active-music {
-            border-color: #00d9f5;
-            color: #00d9f5;
-            background-color: rgba(0, 217, 245, 0.12);
-            box-shadow: 0 0 15px rgba(0, 217, 245, 0.2);
+        .password-input-container {
+            position: relative;
+            width: 100%;
         }
 
-        .language-container {
-            margin-top: 0;
-            width: auto;
-            max-width: none;
-            z-index: auto;
-        }
-
-        .lang-select {
-            font-family: 'Fredoka', sans-serif;
-            background-color: rgba(27, 31, 50, 0.85);
-            color: #94a3b8;
-            border: 1px solid #2e3552;
-            padding: 7px 12px;
-            font-size: 13px;
-            border-radius: 12px;
+        .password-toggle-eye {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: #64748b;
             cursor: pointer;
-            outline: none;
-            backdrop-filter: blur(8px);
+            font-size: 16px;
+            padding: 5px;
+            transition: color 0.2s ease;
+        }
+        
+        body:not([dir="rtl"]) .password-toggle-eye { right: 14px; }
+        body[dir="rtl"] .password-toggle-eye { left: 14px; }
+
+        .password-toggle-eye:hover {
+            color: #00d9f5;
+        }
+
+        .auth-error-msg {
+            color: #ff5959;
+            font-size: 13px;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            width: 100%;
+            text-align: center;
+            display: none;
+            font-weight: 500;
         }
 
         /* --- PRE-GAME SCREENS CONTAINER & CARDS --- */
@@ -120,17 +132,18 @@
             align-items: center;
             justify-content: center;
             background: linear-gradient(135deg, #1b1f32 0%, #121424 100%);
-            padding: 55px 30px 30px 30px; 
+            padding: 35px 30px 30px 30px;
             border-radius: 24px;
             border: 1px solid rgba(0, 245, 160, 0.15);
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 245, 160, 0.03);
             width: 90vw;
-            max-width: 440px;
+            max-width: 420px;
             box-sizing: border-box;
             z-index: 100;
             position: relative;
         }
 
+        /* Controlled hidden state for multi-step workflow */
         .hidden-panel {
             display: none !important;
         }
@@ -154,38 +167,25 @@
             letter-spacing: 0;
         }
 
+        /* UNIVERSAL BACK NAVIGATION BUTTON */
         .back-nav-btn {
             position: absolute;
             top: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: none;
+            border: none;
             color: #94a3b8;
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 18px;
             cursor: pointer;
-            border-radius: 8px;
-            padding: 6px 14px;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            z-index: 110;
+            transition: color 0.2s ease, transform 0.2s ease;
+            font-weight: bold;
+            line-height: 1;
+            padding: 5px;
         }
-        
         body:not([dir="rtl"]) .back-nav-btn { left: 15px; }
-        body[dir="rtl"] .back-nav-btn { right: 15px; }
+        body[dir="rtl"] .back-nav-btn { right: 15px; transform: scaleX(-1); }
 
         .back-nav-btn:hover {
             color: #00f5a0;
-            border-color: #00f5a0;
-            background: rgba(0, 245, 160, 0.08);
-            transform: translateY(-1px);
-        }
-
-        body[dir="rtl"] .back-nav-btn span {
-            transform: scaleX(-1);
-            display: inline-block;
         }
 
         .setup-group {
@@ -204,7 +204,12 @@
             letter-spacing: 0.5px;
             text-align: center;
         }
+        
+        body[dir="rtl"] .setup-group label {
+            letter-spacing: 0;
+        }
 
+        /* USERNAME INPUT ELEMENTS */
         .username-input {
             font-family: 'Fredoka', sans-serif;
             background-color: #0b0c16;
@@ -224,6 +229,7 @@
             box-shadow: 0 0 12px rgba(0, 245, 160, 0.15);
         }
 
+        /* ANIMATED GREETING PANEL */
         .greeting-text {
             color: #ffffff;
             font-size: 24px;
@@ -245,6 +251,7 @@
             animation: popInScale 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
         }
 
+        /* MODE SELECTION CARDS */
         .mode-btn {
             font-family: 'Fredoka', sans-serif;
             background: #0b0c16;
@@ -286,6 +293,7 @@
             font-weight: 300;
         }
 
+        /* MULTIPLAYER LINK ELEMENTS */
         .link-box {
             background-color: #0b0c16;
             color: #00d9f5;
@@ -301,6 +309,7 @@
             font-family: 'Fredoka', sans-serif !important;
         }
 
+        /* SIDE CHOOSER BUTTONS */
         .side-container {
             display: flex;
             gap: 10px;
@@ -381,6 +390,34 @@
             color: #ffffff;
         }
 
+        /* GLOBAL LANGUAGE PICKER CONTAINER */
+        .language-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            width: 90vw;
+            max-width: 420px;
+            box-sizing: border-box;
+            z-index: 105;
+        }
+
+        .lang-select {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #1b1f32;
+            color: #94a3b8;
+            border: 1px solid #2e3552;
+            padding: 6px 12px;
+            font-size: 13px;
+            border-radius: 8px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .lang-select:focus {
+            border-color: #00f5a0;
+            color: #ffffff;
+        }
+        
         /* --- GAMEPLAY MAIN VIEWPORT LAYOUT --- */
         .game-container {
             display: none;
@@ -390,6 +427,7 @@
             max-width: 1100px;
         }
 
+        /* Split display configuration for Coach mode compatibility */
         .arena-workspace {
             display: flex;
             flex-direction: row;
@@ -407,7 +445,7 @@
             .coach-panel {
                 width: 90vw !important;
                 max-width: 550px !important;
-                height: 240px !important;
+                height: 220px !important;
             }
         }
 
@@ -509,7 +547,7 @@
             max-width: 550px;  
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(0, 245, 160, 0.2);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(0, 0, 0, 0.2);
         }
 
         /* --- COACH REAL-TIME CHAT PANEL --- */
@@ -693,6 +731,10 @@
             transform: translateY(-1px);
         }
 
+        @annotation-panel body[dir="rtl"] .back-nav-btn {
+            transform: scaleX(-1);
+        }
+
         @keyframes popInScale {
             0% { transform: scale(0.6); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
@@ -701,25 +743,37 @@
 </head>
 <body>
 
-    <div class="global-top-bar">
-        <div id="globalLanguagePicker" class="language-container">
-            <select class="lang-select" onchange="changeLanguage(this.value)">
-                <option value="en" selected>🇺🇸 English (EN)</option>
-                <option value="es">🇪🇸 Español (ES)</option>
-                <option value="fr">🇫🇷 Français (FR)</option>
-                <option value="ar">🇸🇦 العربية (AR)</option>
-            </select>
-        </div>
-        <button class="global-music-btn" id="musicToggleBtn" onclick="toggleBackgroundMusic()">🎵 <span data-i18n="btn_music">Music Off</span></button>
-    </div>
+    <div id="authOverlay" class="auth-overlay">
+        <div class="setup-card animate-pop">
+            <div class="auth-toggle-tabs">
+                <button id="tabLogin" class="auth-tab active" onclick="switchAuthTab('login')">Log In</button>
+                <button id="tabSignup" class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
+            </div>
+       
+            <h2 id="authTitle">Welcome Back</h2>
+            
+            <div id="authErrorDisplay" class="auth-error-msg">Please correct highlighted fields</div>
 
-    <div id="usernameScreen" class="setup-card">
-        <h2 data-i18n="profile_title">Player Profile</h2>
-        <div class="setup-group">
-            <label for="usernameInput" data-i18n="enter_username">Enter Your Username</label>
-            <input type="text" id="usernameInput" class="username-input" placeholder="Grandmaster..." maxlength="15" oninput="validateUsernameForm()">
+            <div class="setup-group">
+                <label for="authUsername" id="authUsernameLabel">Username</label>
+                <input type="text" id="authUsername" class="username-input" placeholder="Grandmaster..." maxlength="15">
+            </div>
+
+            <div class="setup-group">
+                <label for="authPassword" id="authPasswordLabel">Password</label>
+                <div class="password-input-container">
+                    <input type="password" id="authPassword" class="username-input" placeholder="••••••••">
+                    <button type="button" class="password-toggle-eye" onclick="togglePasswordVisibility()">👁️</button>
+                </div>
+            </div>
+
+            <div class="setup-group hidden-panel" id="authConfirmPasswordGroup">
+                <label for="authConfirmPassword">Confirm Password</label>
+                <input type="password" id="authConfirmPassword" class="username-input" placeholder="••••••••">
+            </div>
+
+            <button id="authSubmitBtn" class="action-submit-btn" onclick="handleAuthSubmit()">Let's Play</button>
         </div>
-        <button id="usernameNextBtn" class="action-submit-btn" disabled onclick="submitUsername()" data-i18n="btn_next">Next</button>
     </div>
 
     <div id="greetingScreen" class="setup-card hidden-panel">
@@ -730,7 +784,7 @@
     </div>
 
     <div id="modeScreen" class="setup-card hidden-panel">
-        <button class="back-nav-btn" onclick="navigateToStep('username')"><span>←</span> <b data-i18n="btn_back">Back</b></button>
+        <button class="back-nav-btn" onclick="navigateToStep('auth')">←</button>
         <h2 data-i18n="select_mode_title">Select Match Architecture</h2>
         
         <button class="mode-btn" onclick="selectMode('bot')">
@@ -750,7 +804,7 @@
     </div>
 
     <div id="setupScreen" class="setup-card hidden-panel">
-        <button class="back-nav-btn" onclick="navigateToStep('mode')"><span>←</span> <b data-i18n="btn_back">Back</b></button>
+        <button class="back-nav-btn" onclick="navigateToStep('mode')">←</button>
         <h2 id="setupScreenTitle" data-i18n="match_init_title">Match Initialization</h2>
         
         <div class="setup-group">
@@ -775,7 +829,7 @@
     </div>
 
     <div id="multiplayerSetupScreen" class="setup-card hidden-panel">
-        <button class="back-nav-btn" onclick="navigateToStep('mode')"><span>←</span> <b data-i18n="btn_back">Back</b></button>
+        <button class="back-nav-btn" onclick="navigateToStep('mode')">←</button>
         <h2 data-i18n="room_reg_title">Room Registration</h2>
         <div class="setup-group">
             <label data-i18n="share_link_label">Share This Invitation Link</label>
@@ -784,6 +838,15 @@
         <p style="color:#94a3b8; font-size:12px; text-align:center; margin: 0 0 15px 0;" data-i18n="share_link_desc">Send this URL to your opponent. The match will sync once they arrive.</p>
         <button class="action-submit-btn" style="background: #242942; border:1px solid #3b446e; color: #ffffff; box-shadow: none;" onclick="copyInviteLink()" data-i18n="btn_copy">Copy Link</button>
         <button class="action-submit-btn" onclick="startGame('multiplayer')" data-i18n="btn_launch">Launch Board Room</button>
+    </div>
+
+    <div id="globalLanguagePicker" class="language-container">
+        <select class="lang-select" onchange="changeLanguage(this.value)">
+            <option value="en" selected>🇺🇸 English (EN)</option>
+            <option value="es">🇪🇸 Español (ES)</option>
+            <option value="fr">🇫🇷 Français (FR)</option>
+            <option value="ar">🇸🇦 العربية (AR)</option>
+        </select>
     </div>
 
     <div id="gameContainer" class="game-container">
@@ -845,145 +908,360 @@
         var username = "Player";
         var currentGameMode = 'bot';
         var currentLang = 'en';
-
-        // Audio Engine States
         var audioCtx = null;
-        var musicInterval = null;
-        var isMusicPlaying = false;
-        var musicGainNode = null;
-        var currentChordIndex = 0;
-        var isGuestJoining = false;
+        var currentAuthMode = 'login';
 
         // --- TRANSLATION MATRIX ---
         var i18n = {
             en: {
-                profile_title: "Player Profile", enter_username: "Enter Your Username", btn_next: "Next", btn_back: "Back", welcome_arena: "Welcome to the Arena,", select_mode_title: "Select Match Architecture", mode_bot_title: "🤖 Combat Engine", mode_bot_desc: "Play locally against our variable-depth neural approximation engines. Perfect for training.", mode_coach_title: "👨‍🏫 Train with a Coach", mode_coach_desc: "Play matching dynamic levels while an AI Grandmaster analyzes your position and chats with you.", mode_multi_title: "⚔️ Live Multiplayer", mode_multi_desc: "Generate an instant, secure pairing room link to challenge a friend anywhere in the world.", match_init_title: "Match Initialization", coach_init_title: "Coach Room Config", choose_alignment: "Choose Alignment", side_white: "White", side_black: "Black", side_random: "Random", engine_level_label: "Opponent Engine Level", lvl_1: "Level 1 (Casual Beginner)", lvl_2: "Level 2 (Tactical Normal)", lvl_3: "Level 3 (Grandmaster Mode)", btn_start: "Start Match", room_reg_title: "Room Registration", share_link_label: "Share This Invitation Link", share_link_desc: "Send this URL to your opponent. The match will sync once they arrive.", btn_copy: "Copy Link", btn_launch: "Launch Board Room", panel_engine_label: "Opponent Engine", panel_live_status: "● Live Multiplayer Connection", btn_takeback: "Takeback", btn_reset: "Reset Setup", btn_music: "Music Off", btn_music_on: "Music On", game_over_title: "Checkmate!", btn_play_again: "Play Again", alert_copy: "Room connection invitation copied to clipboard!", win_msg: " wins by absolute checkmate!", lose_msg: "The Engine defeats ", by_checkmate: " by checkmate.", multi_win: "Checkmate! Victory achieved by ", coach_name: "Coach Mikhail", coach_status: "Grandmaster Assistant", coach_send: "Send", coach_placeholder: "Ask coach anything...", coach_welcome: "Hello! I am your Grandmaster Coach. Let's practice. What aspect of this setup would you like to review?", coach_reply_move: "Good move. Focus on maintaining control over the center board. What is your strategy for development?", coach_reply_capture: "Excellent trade. Keep track of tactical structural weaknesses in their ranks.", coach_reply_generic: "An interesting approach. Always watch out for hanging pieces and unexpected check vectors."
+                profile_title: "Player Profile",
+                enter_username: "Enter Your Username",
+                btn_next: "Next",
+                welcome_arena: "Welcome to the Arena,",
+                select_mode_title: "Select Match Architecture",
+                mode_bot_title: "🤖 Combat Engine",
+                mode_bot_desc: "Play locally against our variable-depth neural approximation engines. Perfect for training.",
+                mode_coach_title: "👨‍🏫 Train with a Coach",
+                mode_coach_desc: "Play matching dynamic levels while an AI Grandmaster analyzes your position and chats with you.",
+                mode_multi_title: "⚔️ Live Multiplayer",
+                mode_multi_desc: "Generate an instant, secure pairing room link to challenge a friend anywhere in the world.",
+                match_init_title: "Match Initialization",
+                coach_init_title: "Coach Room Config",
+                choose_alignment: "Choose Alignment",
+                side_white: "White",
+                side_black: "Black",
+                side_random: "Random",
+                engine_level_label: "Opponent Engine Level",
+                lvl_1: "Level 1 (Casual Beginner)",
+                lvl_2: "Level 2 (Tactical Normal)",
+                lvl_3: "Level 3 (Grandmaster Mode)",
+                btn_start: "Start Match",
+                room_reg_title: "Room Registration",
+                share_link_label: "Share This Invitation Link",
+                share_link_desc: "Send this URL to your opponent. The match will sync once they arrive.",
+                btn_copy: "Copy Link",
+                btn_launch: "Launch Board Room",
+                panel_engine_label: "Opponent Engine",
+                panel_live_status: "● Live Multiplayer Connection",
+                btn_takeback: "Takeback",
+                btn_reset: "Reset Setup",
+                game_over_title: "Checkmate!",
+                btn_play_again: "Play Again",
+                alert_copy: "Room connection invitation copied to clipboard!",
+                win_msg: " wins by absolute checkmate!",
+                lose_msg: "The Engine defeats ",
+                by_checkmate: " by checkmate.",
+                multi_win: "Checkmate! Victory achieved by ",
+                coach_name: "Coach Mikhail",
+                coach_status: "Grandmaster Assistant",
+                coach_send: "Send",
+                coach_placeholder: "Ask coach anything...",
+                coach_welcome: "Hello! I am your Grandmaster Coach. Let's practice. What aspect of this setup would you like to review?",
+                coach_reply_move: "Good move. Focus on maintaining control over the center board. What is your strategy for development?",
+                coach_reply_capture: "Excellent trade. Keep track of tactical structural weaknesses in their ranks.",
+                coach_reply_generic: "An interesting approach. Always watch out for hanging pieces and unexpected check vectors."
             },
             es: {
-                profile_title: "Perfil del Jugador", enter_username: "Introduce tu Nombre de Usuario", btn_next: "Siguiente", btn_back: "Atrás", welcome_arena: "Bienvenido a la Arena,", select_mode_title: "Seleccionar Arquitectura de Partida", mode_bot_title: "🤖 Motor de Combate", mode_bot_desc: "Juega localmente contra nuestros motores de aproximación neuronal variables. Perfecto para entrenar.", mode_coach_title: "👨‍🏫 Entrenar con un Entrenador", mode_coach_desc: "Juega en niveles dinámicos tandis qu'un Gran Maestro de IA analiza tu posición y habla contigo.", mode_multi_title: "⚔️ Multijugador en Vivo", mode_multi_desc: "Genera un enlace de emparejamiento instantáneo y seguro para desafiar a un amigo en cualquier parte del mundo.", match_init_title: "Inicialización de la Partida", coach_init_title: "Configuración de Sala de Entrenamiento", choose_alignment: "Elegir Bando", side_white: "Blancas", side_black: "Negras", side_random: "Aleatorio", engine_level_label: "Nivel del Motor Oponente", lvl_1: "Nivel 1 (Principiante Casual)", lvl_2: "Nivel 2 (Táctico Normal)", lvl_3: "Nivel 3 (Modo Gran Maestro)", btn_start: "Comenzar Partida", room_reg_title: "Registro de la Sala", share_link_label: "Comparte este Enlace de Invitación", share_link_desc: "Envía esta URL a tu oponente. La partida se sincronizará cuando llegue.", btn_copy: "Copiar Enlace", btn_launch: "Lanzar Sala de Tablero", panel_engine_label: "Motor Oponente", panel_live_status: "● Conexión Multijugador en Vivo", btn_takeback: "Retractarse", btn_reset: "Reiniciar Ajustes", btn_music: "Música Off", btn_music_on: "Música On", game_over_title: "¡Jaque Mate!", btn_play_again: "Jugar de Nuevo", alert_copy: "¡Invitación de conexión de sala copiada al portapapeles!", win_msg: " ¡gana por jaque mate absoluto!", lose_msg: "El Motor derrota a ", by_checkmate: " por jaque mate.", multi_win: "¡Jaque Mate! Victoria Conseguida por las ", coach_name: "Entrenador Mikhail", coach_status: "Asistente Gran Maestro", coach_send: "Enviar", coach_placeholder: "Pregúntale al entrenador...", coach_welcome: "¡Hola! Soy tu entrenador de Gran Maestro. Practiquemos. ¿Qué aspecto de esta posición quieres repasar?", coach_reply_move: "Buen movimiento. Concéntrate en mantener el control del centro del tablero. ¿Cuál es tu plan de desarrollo?", coach_reply_capture: "Excelente captura. Monitorea las debilidades estructurales tácticas en sus filas.", coach_reply_generic: "Un enfoque interesante. Siempre ten cuidado con las piezas desprotegidas y los vectores de jaque inesperados."
+                profile_title: "Perfil del Jugador",
+                enter_username: "Introduce tu Nombre de Usuario",
+                btn_next: "Siguiente",
+                welcome_arena: "Bienvenido a la Arena,",
+                select_mode_title: "Seleccionar Arquitectura de Partida",
+                mode_bot_title: "🤖 Motor de Combate",
+                mode_bot_desc: "Juega localmente contra nuestros motores de aproximación neuronal variables. Perfecto para entrenar.",
+                mode_coach_title: "👨‍🏫 Entrenar con un Entrenador",
+                mode_coach_desc: "Juega en niveles dinámicos mientras un Gran Maestro de IA analiza tu posición y habla contigo.",
+                mode_multi_title: "⚔️ Multijugador en Vivo",
+                mode_multi_desc: "Genera un enlace de emparejamiento instantáneo y seguro para desafiar a un amigo en cualquier parte del mundo.",
+                match_init_title: "Inicialización de la Partida",
+                coach_init_title: "Configuración de Sala de Entrenamiento",
+                choose_alignment: "Elegir Bando",
+                side_white: "Blancas",
+                side_black: "Negras",
+                side_random: "Aleatorio",
+                engine_level_label: "Nivel del Motor Oponente",
+                lvl_1: "Nivel 1 (Principiante Casual)",
+                lvl_2: "Nivel 2 (Táctico Normal)",
+                lvl_3: "Nivel 3 (Modo Gran Maestro)",
+                btn_start: "Comenzar Partida",
+                room_reg_title: "Registro de la Sala",
+                share_link_label: "Comparte este Enlace de Invitación",
+                share_link_desc: "Envía esta URL a tu oponente. La partida se sincronizará cuando llegue.",
+                btn_copy: "Copiar Enlace",
+                btn_launch: "Lanzar Sala de Tablero",
+                panel_engine_label: "Motor Oponente",
+                panel_live_status: "● Conexión Multijugador en Vivo",
+                btn_takeback: "Retractarse",
+                btn_reset: "Reiniciar Ajustes",
+                game_over_title: "¡Jaque Mate!",
+                btn_play_again: "Jugar de Nuevo",
+                alert_copy: "¡Invitación de conexión de sala copiada al portapapeles!",
+                win_msg: " ¡gana por jaque mate absoluto!",
+                lose_msg: "El Motor derrota a ",
+                by_checkmate: " por jaque mate.",
+                multi_win: "¡Jaque Mate! Victoria conseguida por las ",
+                coach_name: "Entrenador Mikhail",
+                coach_status: "Asistente Gran Maestro",
+                coach_send: "Enviar",
+                coach_placeholder: "Pregúntale al entrenador...",
+                coach_welcome: "¡Hola! Soy tu entrenador de Gran Maestro. Practiquemos. ¿Qué aspecto de esta posición quieres repasar?",
+                coach_reply_move: "Buen movimiento. Concéntrate en mantener el control del centro del tablero. ¿Cuál es tu plan de desarrollo?",
+                coach_reply_capture: "Excelente captura. Monitorea las debilidades estructurales tácticas en sus filas.",
+                coach_reply_generic: "Un enfoque interesante. Siempre ten cuidado con las piezas desprotegidas y los vectores de jaque inesperados."
             },
             fr: {
-                profile_title: "Profil du Joueur", enter_username: "Entrez votre nom d'utilisateur", btn_next: "Suivant", btn_back: "Retour", welcome_arena: "Bienvenue dans l'Arène,", select_mode_title: "Sélectionner le Mode de Jeu", mode_bot_title: "🤖 Moteur de Combat", mode_bot_desc: "Jouez localement contre nos moteurs d'approximation neuronale à profondeur variable. Idéal pour l'entraînement.", mode_coach_title: "👨‍🏫 S'entraîner avec un Coach", mode_coach_desc: "Jouez à des niveaux dynamiques tandis qu'un Grand Maître IA analyse votre position et discute avec vous.", mode_multi_title: "⚔️ Multijoueur en Direct", mode_multi_desc: "Générez un lien de salon instantané et sécurisé pour défier un ami partout dans le monde.", match_init_title: "Initialisation du Match", coach_init_title: "Configuration Salle d'Entraînement", choose_alignment: "Choisir l'Alignement", side_white: "Blancs", side_black: "Noirs", side_random: "Aléatoire", engine_level_label: "Niveau du Moteur Adverse", lvl_1: "Niveau 1 (Débutant Casual)", lvl_2: "Niveau 2 (Tactique Normal)", lvl_3: "Niveau 3 (Mode Grand Maître)", btn_start: "Démarrer le Match", room_reg_title: "Enregistrement du Salon", share_link_label: "Partager ce Lien d'Invitation", share_link_desc: "Envoyez cette URL à votre adversaire. Le match se synchronisera dès son arrivée.", btn_copy: "Copier le Lien", btn_launch: "Lancer le Salon de Jeu", panel_engine_label: "Moteur Adverse", panel_live_status: "● Connexion Multijoueur en Direct", btn_takeback: "Annuler le coup", btn_reset: "Réinitialiser", btn_music: "Musique Off", btn_music_on: "Musique On", game_over_title: "Échec et Mat !", btn_play_again: "Rejouer", alert_copy: "Invitation de connexion copiée dans le presse-papiers !", win_msg: " gagne par échec et mat absolu !", lose_msg: "Le Moteur bat ", by_checkmate: " par échec et mat.", multi_win: "Échec et Mat ! Victoire remportée par les ", coach_name: "Coach Mikhail", coach_status: "Assistant Grand Maître", coach_send: "Envoyer", coach_placeholder: "Demander au coach...", coach_welcome: "Bonjour ! Je suis votre coach Grand Maître. Entraînons-nous. Quel aspect de cette position aimeriez-vous analyser ?", coach_reply_move: "Bon coup. Concentrez-vous sur le contrôle du centre de l'échiquier. Quelle est votre stratégie de développement ?", coach_reply_capture: "Excellente capture. Restez attentif aux fa faiblesses tactiques structurelles de son camp.", coach_reply_generic: "Une approche intéressante. Faites toujours attention aux pièces non protégées et aux axes d'échec imprévus."
+                profile_title: "Profil du Joueur",
+                enter_username: "Entrez votre nom d'utilisateur",
+                btn_next: "Suivant",
+                welcome_arena: "Bienvenue dans l'Arène,",
+                select_mode_title: "Sélectionner le Mode de Jeu",
+                mode_bot_title: "🤖 Moteur de Combat",
+                mode_bot_desc: "Jouez localement contre nos moteurs d'approximation neuronale à profondeur variable. Idéal pour l'entraînement.",
+                mode_coach_title: "👨‍🏫 S'entraîner avec un Coach",
+                mode_coach_desc: "Jouez à des niveaux dynamiques tandis qu'un Grand Maître IA analyse votre position et discute avec vous.",
+                mode_multi_title: "⚔️ Multijoueur en Direct",
+                mode_multi_desc: "Générez un lien de salon instantané et sécurisé pour défier un ami partout dans le monde.",
+                match_init_title: "Initialisation du Match",
+                coach_init_title: "Configuration Salle d'Entraînement",
+                choose_alignment: "Choisir l'Alignement",
+                side_white: "Blancs",
+                side_black: "Noirs",
+                side_random: "Aléatoire",
+                engine_level_label: "Niveau du Moteur Adverse",
+                lvl_1: "Niveau 1 (Débutant Occasionnel)",
+                lvl_2: "Niveau 2 (Tactique Normal)",
+                lvl_3: "Niveau 3 (Mode Grand Maître)",
+                btn_start: "Démarrer le Match",
+                room_reg_title: "Enregistrement du Salon",
+                share_link_label: "Partagez ce Lien d'Invitation",
+                share_link_desc: "Envoyez cette URL à votre adversaire. Le match se synchronisera dès son arrivée.",
+                btn_copy: "Copier le Lien",
+                btn_launch: "Lancer le Salon",
+                panel_engine_label: "Moteur Adverse",
+                panel_live_status: "● Connexion Multijoueur En Direct",
+                btn_takeback: "Annuler le Coup",
+                btn_reset: "Réinitialiser",
+                game_over_title: "Échec et Mat !",
+                btn_play_again: "Rejouer",
+                alert_copy: "Invitation copiée dans le presse-papiers !",
+                win_msg: " gagne par échec et mat absolu !",
+                lose_msg: "Le moteur bat ",
+                by_checkmate: " par échec et mat.",
+                multi_win: "Échec et Mat ! Victoire remportée par les ",
+                coach_name: "Entraîneur Mikhail",
+                coach_status: "Assistant Grand Maître",
+                coach_send: "Envoyer",
+                coach_placeholder: "Demandez n'importe quoi au coach...",
+                coach_welcome: "Bonjour ! Je suis votre entraîneur Grand Maître. Entraînons-nous. Quel aspect de cette configuration aimeriez-vous analyser ?",
+                coach_reply_move: "Bon coup. Concentrez-vous sur le contrôle du centre du plateau. Quelle est votre stratégie de développement ?",
+                coach_reply_capture: "Excellent échange. Gardez un œil sur les faiblesses tactiques de leur structure.",
+                coach_reply_generic: "Une approche intéressante. Faites toujours attention aux pièces suspendues et aux vecteurs d'échec inattendus."
             },
             ar: {
-                profile_title: "ملف اللاعب الشخصي", enter_username: "أدخل اسم المستخدم الخاص بك", btn_next: "التالي", btn_back: "رجوع", welcome_arena: "مرحبًا بك في الساحة،", select_mode_title: "اختر هيكلية المباراة", mode_bot_title: "🤖 محرك القتال", mode_bot_desc: "العب محليًا ضد محركات التقريب العصبي المتغيرة العمق. مثالي للتدريب والارتقاء بالمستوى.", mode_coach_title: "👨‍🏫 التدريب مع مدرب", mode_coach_desc: "العب مستويات ديناميكية متطابقة بينما يقوم الأستاذ الكبير المعتمد على الذكاء الاصطناعي بتحليل موقفك والتحدث معك.", mode_multi_title: "⚔️ مواجهة متعددة اللاعبين", mode_multi_desc: "أنشئ رابط غرفة اقتران فوري وآمن لتحدي صديق في أي مكان في العالم.", match_init_title: "تهيئة وإعداد المباراة", coach_init_title: "إعدادات غرفة التدريب", choose_alignment: "اختر جانب اللعب", side_white: "القطع البيضاء", side_black: "القطع السوداء", side_random: "عشوائي", engine_level_label: "مستوى محرك الخصم", lvl_1: "المستوى 1 (مبتدئ كاجوال)", lvl_2: "المستوى 2 (تكتيكي عادي)", lvl_3: "المستوى 3 (طراز أستاذ كبير)", btn_start: "ابدأ المباراة", room_reg_title: "تسجيل وإنشاء الغرفة", share_link_label: "شارك رابط الدعوة هذا", share_link_desc: "أرسل هذا الرابط إلى خصمك. ستتم مزامنة المباراة بمجرد دخوله الرابط.", btn_copy: "نسخ الرابط", btn_launch: "إطلاق غرفة الرقعة", panel_engine_label: "محرك الخصم", panel_live_status: "● اتصال مباشر متعدد اللاعبين", btn_takeback: "تراجع عن النقلة", btn_reset: "إعادة ضبط الإعدادات", btn_music: "الموسيقى صامتة", btn_music_on: "الموسيقى تعمل", game_over_title: "كش مات! (نهاية المباراة)", btn_play_again: "العب مجددًا", alert_copy: "تم نسخ رابط دعوة اتصال الغرفة إلى الحافظة بنجاح!", win_msg: " ينتصر بالفوز الساحق كش مات!", lose_msg: "المحرك يهزم اللاعب ", by_checkmate: " عن طريق كش مات.", multi_win: "كش مات! تم تحقيق النصر لصالح جانب ", coach_name: "المدرب ميخائيل", coach_status: "مساعد الأستاذ الكبير", coach_send: "إرسال", coach_placeholder: "اسأل المدرب أي شيء...", coach_welcome: "مرحبًا! أنا مدربك الذكي برتبة أستاذ كبير. لنتدرب معًا. ما هو الجانب الذي ترغب في مراجعته في هذا الوضع؟", coach_reply_move: "نقلة جيدة ومدروسة. ركّز على فرض السيطرة على مركز الرقعة. ما هي استراتيجيتك القادمة للانتشار؟", coach_reply_capture: "عملية أخذ ممتازة وتصفية موفقة. تابع باستمرار نقاط الضعف التكتيكية في هيكلية بيادق الخصم.", coach_reply_generic: "أسلوب مثير للاهتمام في التفكير. احذر دائمًا من القطع المعلقة وغير المحمية ومسارات الكش المفاجئة."
+                profile_title: "ملف اللاعب",
+                enter_username: "أدخل اسم المستخدم",
+                btn_next: "التالي",
+                welcome_arena: "مرحباً بك في الساحة،",
+                select_mode_title: "اختر هيكلية المباراة",
+                mode_bot_title: "🤖 محرك القتال",
+                mode_bot_desc: "العب محلياً ضد محركات التقريب العصبي ذات العمق المتغير. مثالية للتدريب.",
+                mode_coach_title: "👨‍🏫 تدرب مع مدرب",
+                mode_coach_desc: "العب مستويات ديناميكية متطابقة بينما يقوم استاد كبير بالذكاء الاصطناعي بتحليل موقفك والدردشة معك.",
+                mode_multi_title: "⚔️ مواجهة مباشرة",
+                mode_multi_desc: "أنشئ رابط غرفة اقتران فوري وآمن لتحدي صديق في أي مكان في العالم.",
+                match_init_title: "تهيئة المباراة",
+                coach_init_title: "إعدادات غرفة المدرب",
+                choose_alignment: "اختر جانب اللعب",
+                side_white: "الأبيض",
+                side_black: "الأسود",
+                side_random: "عشوائي",
+                engine_level_label: "مستوى محرك الخصم",
+                lvl_1: "المستوى 1 (مبتدئ عادي)",
+                lvl_2: "المستوى 2 (تكتيكي طبيعي)",
+                lvl_3: "المستوى 3 (وضع الأستاذ الكبير)",
+                btn_start: "ابدأ المباراة",
+                room_reg_title: "تسجيل الغرفة",
+                share_link_label: "شارك رابط الدعوة هذا",
+                share_link_desc: "أرسل هذا الرابط إلى خصمك. ستتزامن المباراة بمجرد وصوله.",
+                btn_copy: "نسخ الرابط",
+                btn_launch: "إطلاق غرفة اللوحة",
+                panel_engine_label: "محرك الخصم",
+                panel_live_status: "● اتصالات متعددة اللاعبين المباشر",
+                btn_takeback: "تراجع عن النقلة",
+                btn_reset: "إعادة ضبط الإعدادات",
+                game_over_title: "كش ملك!",
+                btn_play_again: "العب مجدداً",
+                alert_copy: "تم نسخ دعوة اتصال الغرفة إلى الحافظة!",
+                win_msg: " يفوز بكش ملك ساحق!",
+                lose_msg: "المحرك يهزم ",
+                by_checkmate: " عن طريق كش ملك.",
+                multi_win: "كش ملك! تحقق الفوز بواسطة قطع ",
+                coach_name: "المدرب ميخائيل",
+                coach_status: "مساعد الأستاذ الكبير",
+                coach_send: "إرسال",
+                coach_placeholder: "اسأل المدرب عن أي شيء...",
+                coach_welcome: "مرحباً! أنا مدربك الأستاذ الكبير. لنبدأ التدريب. ما هو الجانب الذي ترغب في مراجعته في هذا الوضع؟",
+                coach_reply_move: "نقلة جيدة. ركز على الحفاظ على السيطرة على وسط اللوحة. ما هي استراتيجيتك للتطوير؟",
+                coach_reply_capture: "تبادل ممتاز. تابع نقاط الضعف الهيكلية التكتيكية في صفوفهم.",
+                coach_reply_generic: "نهج مثير للاهتمام. احذر دائماً من القطع المعلقة ومتجهات الكش المفاجئة."
             }
         };
 
-        // --- DYNAMIC DISPATCH LIFECYCLE HANDLERS ---
-        document.addEventListener("DOMContentLoaded", function() {
-            parseURLParameters();
-            updateUILocalization();
+        // --- AUTH SYSTEM IMPLEMENTATION (WITH LOCAL STORAGE DATABASE) ---
+        function switchAuthTab(mode) {
+            currentAuthMode = mode;
             
-            // AUTOMATIC STORAGE SYSTEM TRIGGER
-            var savedUsername = localStorage.getItem("yazan_chess_username");
-            if (savedUsername && !isGuestJoining) {
-                username = savedUsername;
-                document.getElementById('displayUsername').innerText = username;
-                document.getElementById('usernameInput').value = username;
-                validateUsernameForm();
+            var tabLogin = document.getElementById('tabLogin');
+            var tabSignup = document.getElementById('tabSignup');
+            var authTitle = document.getElementById('authTitle');
+            var authSubmitBtn = document.getElementById('authSubmitBtn');
+            var confirmPasswordGroup = document.getElementById('authConfirmPasswordGroup');
+            var errorDisplay = document.getElementById('authErrorDisplay');
+            
+            if(errorDisplay) errorDisplay.style.display = 'none';
+            document.getElementById('authUsername').value = "";
+            document.getElementById('authPassword').value = "";
+            if(document.getElementById('authConfirmPassword')) document.getElementById('authConfirmPassword').value = "";
 
-                // Skip profile card completely, route right into choice panel
-                document.getElementById('usernameScreen').classList.add('hidden-panel');
-                document.getElementById('modeScreen').classList.remove('hidden-panel');
-            }
-        });
-
-        function parseURLParameters() {
-            var params = new URLSearchParams(window.location.search);
-            var room = params.get('room');
-            if (room) {
-                isGuestJoining = true;
-                currentGameMode = 'multiplayer';
-                playerColor = 'b'; // Assigned black as secondary guest connector
+            if (mode === 'login') {
+                tabLogin.classList.add('active');
+                tabSignup.classList.remove('active');
+                authTitle.innerText = currentLang === 'ar' ? 'تسجيل الدخول' : 'Welcome Back';
+                authSubmitBtn.innerText = currentLang === 'ar' ? 'دعنا نلعب' : "Let's Play";
+                
+                confirmPasswordGroup.classList.add('hidden-panel');
+            } else {
+                tabSignup.classList.add('active');
+                tabLogin.classList.remove('active');
+                authTitle.innerText = currentLang === 'ar' ? 'حساب جديد' : 'Create Account';
+                authSubmitBtn.innerText = currentLang === 'ar' ? 'إنشاء حساب' : 'Sign Up Now';
+                
+                confirmPasswordGroup.classList.remove('hidden-panel');
             }
         }
 
-        function changeLanguage(lang) {
-            currentLang = lang;
-            var isRTL = (lang === 'ar');
-            document.body.setAttribute('dir', isRTL ? 'rtl' : 'ltr');
-            updateUILocalization();
+        function togglePasswordVisibility() {
+            var passField = document.getElementById('authPassword');
+            var confirmField = document.getElementById('authConfirmPassword');
+            
+            if (passField.type === 'password') {
+                passField.type = 'text';
+                confirmField.type = 'text';
+            } else {
+                passField.type = 'password';
+                confirmField.type = 'password';
+            }
         }
 
-        function updateUILocalization() {
-            document.querySelectorAll('[data-i18n]').forEach(function(element) {
-                var key = element.getAttribute('data-i18n');
-                if (i18n[currentLang] && i18n[currentLang][key]) {
-                    if (key === 'btn_music') {
-                        element.innerText = isMusicPlaying ? i18n[currentLang].btn_music_on : i18n[currentLang].btn_music;
-                    } else {
-                        element.innerText = i18n[currentLang][key];
-                    }
+        function handleAuthSubmit() {
+            var usernameInput = document.getElementById('authUsername').value.trim();
+            var passwordInput = document.getElementById('authPassword').value;
+            var confirmPasswordInput = document.getElementById('authConfirmPassword') ? document.getElementById('authConfirmPassword').value : "";
+
+            if (!usernameInput || !passwordInput) {
+                showAuthError(currentLang === 'ar' ? 'يرجى ملء جميع الحقول المطلوبة' : 'Please fill in all required fields.');
+                return;
+            }
+
+            // Get local mock database database profiles
+            var registeredUsers = JSON.parse(localStorage.getItem('chess_users') || '{}');
+
+            if (currentAuthMode === 'signup') {
+                // Validation Rules for creating accounts
+                if (passwordInput.length < 6) {
+                    showAuthError(currentLang === 'ar' ? 'يجب أن تتكون كلمة المرور من 6 رموز على الأقل' : 'Password must be at least 6 characters.');
+                    return;
                 }
-            });
+                if (passwordInput !== confirmPasswordInput) {
+                    showAuthError(currentLang === 'ar' ? 'كلمات المرور غير متطابقة' : 'Passwords do not match.');
+                    return;
+                }
+                if (registeredUsers[usernameInput.toLowerCase()]) {
+                    showAuthError(currentLang === 'ar' ? 'اسم المستخدم هذا مسجل بالفعل' : 'Username is already taken!');
+                    return;
+                }
 
-            var tx = document.getElementById('coachTextField');
-            if(tx && i18n[currentLang].coach_placeholder) {
-                tx.placeholder = i18n[currentLang].coach_placeholder;
+                // Write and store new profile configuration to simulated records
+                registeredUsers[usernameInput.toLowerCase()] = {
+                    username: usernameInput,
+                    password: passwordInput
+                };
+                localStorage.setItem('chess_users', JSON.stringify(registeredUsers));
+                
+                username = usernameInput;
+            } else {
+                // LOG IN VALIDATION CHECKS
+                var userAccount = registeredUsers[usernameInput.toLowerCase()];
+                
+                if (!userAccount) {
+                    showAuthError(currentLang === 'ar' ? 'اسم المستخدم غير موجود، يرجى التسجيل أولاً' : 'Account not found. Please click Sign Up first.');
+                    return;
+                }
+                if (userAccount.password !== passwordInput) {
+                    showAuthError(currentLang === 'ar' ? 'كلمة المرور غير صحيحة' : 'Incorrect password. Try again.');
+                    return;
+                }
+
+                username = userAccount.username;
+            }
+
+            // Logged in/Signed up successfully! Transition to welcome screen
+            document.getElementById('displayUsername').innerText = username;
+            document.getElementById('authOverlay').style.display = 'none';
+            
+            var greeting = document.getElementById('greetingScreen');
+            greeting.classList.remove('hidden-panel');
+            
+            setTimeout(function() {
+                greeting.classList.add('hidden-panel');
+                document.getElementById('modeScreen').classList.remove('hidden-panel');
+            }, 1800);
+        }
+
+        function showAuthError(message) {
+            var errorDisplay = document.getElementById('authErrorDisplay');
+            if (errorDisplay) {
+                errorDisplay.innerText = message;
+                errorDisplay.style.display = 'block';
             }
         }
 
-        function validateUsernameForm() {
-            var val = document.getElementById('usernameInput').value.trim();
-            document.getElementById('usernameNextBtn').disabled = (val.length === 0);
-        }
-
-        function submitUsername() {
-            var inputVal = document.getElementById('usernameInput').value.trim();
-            if (inputVal.length > 0) {
-                username = inputVal;
-                
-                // Write directly to local storage cache file context
-                localStorage.setItem("yazan_chess_username", username);
-                
-                document.getElementById('displayUsername').innerText = username;
-                
-                document.getElementById('usernameScreen').classList.add('hidden-panel');
-                document.getElementById('greetingScreen').classList.remove('hidden-panel');
-                
-                setTimeout(function() {
-                    document.getElementById('greetingScreen').classList.add('hidden-panel');
-                    if (isGuestJoining) {
-                        startGame('multiplayer');
-                    } else {
-                        document.getElementById('modeScreen').classList.remove('hidden-panel');
-                    }
-                }, 1800);
-            }
-        }
-
-        function navigateToStep(step) {
-            document.getElementById('usernameScreen').classList.add('hidden-panel');
+        // --- NAVIGATION WORKFLOW HANDLERS ---
+        function navigateToStep(targetStep) {
+            document.getElementById('authOverlay').style.display = 'none';
             document.getElementById('modeScreen').classList.add('hidden-panel');
             document.getElementById('setupScreen').classList.add('hidden-panel');
             document.getElementById('multiplayerSetupScreen').classList.add('hidden-panel');
-            
-            if (step === 'username') {
-                document.getElementById('usernameScreen').classList.remove('hidden-panel');
-                if(username !== "Player") {
-                    document.getElementById('usernameInput').value = username;
-                    validateUsernameForm();
-                }
-            } else if (step === 'mode') {
+            document.getElementById('gameContainer').style.display = 'none';
+
+            if (targetStep === 'auth') {
+                document.getElementById('authOverlay').style.display = 'flex';
+                switchAuthTab('login');
+            } else if (targetStep === 'mode') {
                 document.getElementById('modeScreen').classList.remove('hidden-panel');
+            } else if (targetStep === 'setup') {
+                document.getElementById('setupScreen').classList.remove('hidden-panel');
             }
         }
 
         function selectMode(mode) {
             currentGameMode = mode;
-            document.getElementById('modeScreen').classList.add('hidden-panel');
+            var setupTitle = document.getElementById('setupScreenTitle');
             
-            if (mode === 'multiplayer') {
-                document.getElementById('multiplayerSetupScreen').classList.remove('hidden-panel');
-                var dummyRoomId = "room_" + Math.random().toString(36).substring(2, 10);
-                var inviteUrl = window.location.origin + window.location.pathname + "?room=" + dummyRoomId;
-                document.getElementById('inviteLinkBox').innerText = inviteUrl;
-            } else {
-                var titleKey = (mode === 'coach') ? 'coach_init_title' : 'match_init_title';
-                document.getElementById('setupScreenTitle').setAttribute('data-i18n', titleKey);
-                document.getElementById('setupScreenTitle').innerText = i18n[currentLang][titleKey];
+            if (mode === 'coach') {
+                setupTitle.setAttribute('data-i18n', 'coach_init_title');
+                setupTitle.innerText = i18n[currentLang].coach_init_title;
                 document.getElementById('setupScreen').classList.remove('hidden-panel');
+                document.getElementById('modeScreen').classList.add('hidden-panel');
+            } else if (mode === 'bot') {
+                setupTitle.setAttribute('data-i18n', 'match_init_title');
+                setupTitle.innerText = i18n[currentLang].match_init_title;
+                document.getElementById('setupScreen').classList.remove('hidden-panel');
+                document.getElementById('modeScreen').classList.add('hidden-panel');
+            } else if (mode === 'multiplayer') {
+                document.getElementById('modeScreen').classList.add('hidden-panel');
+                document.getElementById('multiplayerSetupScreen').classList.remove('hidden-panel');
+                generateMultiplayerRoomLink();
             }
         }
 
@@ -992,17 +1270,38 @@
             document.getElementById('sideWhite').classList.remove('selected');
             document.getElementById('sideBlack').classList.remove('selected');
             document.getElementById('sideRandom').classList.remove('selected');
-            
+
             if (color === 'w') document.getElementById('sideWhite').classList.add('selected');
             if (color === 'b') document.getElementById('sideBlack').classList.add('selected');
             if (color === 'r') document.getElementById('sideRandom').classList.add('selected');
         }
 
+        function generateMultiplayerRoomLink() {
+            var randomRoomId = Math.random().toString(36).substring(2, 10);
+            var sideAssignment = 'b'; 
+            var currentURL = window.location.href.split('?')[0];
+            var inviteURL = currentURL + "?room=" + randomRoomId + "&side=" + sideAssignment + "&guest=true";
+            
+            var linkBox = document.getElementById('inviteLinkBox');
+            if (linkBox) {
+                linkBox.innerText = inviteURL;
+            }
+        }
+
         function copyInviteLink() {
-            var linkText = document.getElementById('inviteLinkBox').innerText;
-            navigator.clipboard.writeText(linkText).then(function() {
+            var targetText = document.getElementById('inviteLinkBox').innerText;
+            navigator.clipboard.writeText(targetText).then(function() {
                 alert(i18n[currentLang].alert_copy);
             });
+        }
+
+        function returnToMenu() {
+            document.getElementById('checkmateOverlay').style.display = 'none';
+            game.reset();
+            if (board) {
+                board.clear();
+            }
+            navigateToStep('mode');
         }
 
         function syncEngineLevelSelector(val) {
@@ -1010,206 +1309,136 @@
             document.getElementById('botLevel').value = val;
         }
 
-        // --- SUBMIT GAME BOOTLOADER WORKSPACE ---
+        // --- EXPERIMENTAL AUDIO SOUND FX OBJECTS ---
+        function initAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSynthesizedSound(type) {
+            try {
+                initAudioContext();
+                if (!audioCtx) return;
+
+                var osc = audioCtx.createOscillator();
+                var gainNode = audioCtx.createGain();
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                if (type === 'move') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.12);
+                    gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.12);
+                } else if (type === 'capture') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(260, audioCtx.currentTime + 0.08);
+                    osc.frequency.linearRampToValueAtTime(90, audioCtx.currentTime + 0.18);
+                    gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.18);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.18);
+                } else if (type === 'gameover') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(220, audioCtx.currentTime + 0.2);
+                    osc.frequency.linearRampToValueAtTime(110, audioCtx.currentTime + 0.5);
+                    gainNode.gain.setValueAtTime(0.25, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.5);
+                }
+            } catch(e) {
+                console.log("Audio failure bypass:", e);
+            }
+        }
+
+        // --- CORE GAME LOGIC RUNTIME ENGINE ---
         function startGame(mode) {
-            // Setup alignment randomization mechanics
+            initAudioContext();
+            
+            document.getElementById('setupScreen').classList.add('hidden-panel');
+            document.getElementById('multiplayerSetupScreen').classList.add('hidden-panel');
+            document.getElementById('gameContainer').style.display = 'flex';
+            
+            var engineSelector = document.getElementById('engineSelectorWrapper');
+            var liveStatus = document.getElementById('multiplayerStatusWrapper');
+            var coachArea = document.getElementById('coachPanel');
+
+            engineSelector.classList.remove('hidden-panel');
+            liveStatus.classList.add('hidden-panel');
+            coachArea.style.display = 'none';
+
+            if (mode === 'multiplayer') {
+                engineSelector.classList.add('hidden-panel');
+                liveStatus.classList.remove('hidden-panel');
+            } else if (mode === 'coach') {
+                coachArea.style.display = 'flex';
+                initializeCoachWorkspace();
+            }
+
             if (playerColor === 'r') {
                 playerColor = Math.random() < 0.5 ? 'w' : 'b';
             }
 
-            // Interface switches
-            document.getElementById('setupScreen').classList.add('hidden-panel');
-            document.getElementById('multiplayerSetupScreen').classList.add('hidden-panel');
-            document.getElementById('gameContainer').style.display = 'flex';
+            var chosenLevel = document.getElementById('setupLevel').value;
+            document.getElementById('botLevel').value = chosenLevel;
 
-            if (mode === 'coach') {
-                document.getElementById('coachPanel').style.display = 'flex';
-                document.getElementById('engineSelectorWrapper').classList.remove('hidden-panel');
-                document.getElementById('multiplayerStatusWrapper').classList.add('hidden-panel');
-                initializeCoachWelcomeMessage();
-            } else if (mode === 'multiplayer') {
-                document.getElementById('coachPanel').style.display = 'none';
-                document.getElementById('engineSelectorWrapper').classList.add('hidden-panel');
-                document.getElementById('multiplayerStatusWrapper').classList.remove('hidden-panel');
-            } else {
-                document.getElementById('coachPanel').style.display = 'none';
-                document.getElementById('engineSelectorWrapper').classList.remove('hidden-panel');
-                document.getElementById('multiplayerStatusWrapper').classList.add('hidden-panel');
-            }
-
-            var selectedLevel = document.getElementById('setupLevel').value;
-            document.getElementById('botLevel').value = selectedLevel;
-
-            // Generate Board instance viewport configuration bounds
             var boardConfig = {
                 draggable: true,
                 position: 'start',
-                orientation: (playerColor === 'b') ? 'black' : 'white',
+                orientation: playerColor === 'w' ? 'white' : 'black',
                 onDragStart: onDragStart,
                 onDrop: onDrop,
                 onSnapEnd: onSnapEnd,
                 pieceTheme: getPiecePath
             };
-            
-            game.reset();
+
             board = Chessboard('myBoard', boardConfig);
             $(window).resize(board.resize);
 
-            // Audio API boot configuration hook
-            if (!audioCtx) {
-                try {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                } catch(e) {}
-            }
-
-            // Engine moves first if player chose Black side alignment
-            if (playerColor === 'b' && (currentGameMode === 'bot' || currentGameMode === 'coach')) {
+            if (playerColor === 'b' && mode !== 'multiplayer') {
                 setTimeout(triggerEngineMoveCalculation, 600);
             }
         }
 
-        function returnToMenu() {
-            document.getElementById('checkmateOverlay').style.display = 'none';
-            document.getElementById('gameContainer').style.display = 'none';
-            
-            // Re-route clean entry layout choice screens based on cache states
-            document.getElementById('usernameScreen').classList.add('hidden-panel');
-            document.getElementById('greetingScreen').classList.add('hidden-panel');
-            document.getElementById('setupScreen').classList.add('hidden-panel');
-            document.getElementById('multiplayerSetupScreen').classList.add('hidden-panel');
-            
-            document.getElementById('modeScreen').classList.remove('hidden-panel');
-        }
-
-        // --- WEB AUDIO GENERATIVE CHORD SOUND DESIGN ---
-        function playSynthesizerTone(frequency, type, duration, volume) {
-            if (!audioCtx) return;
-            try {
-                var osc = audioCtx.createOscillator();
-                var gain = audioCtx.createGain();
-                
-                osc.type = type;
-                osc.frequency.value = frequency;
-                
-                gain.gain.setValueAtTime(volume, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-                
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch(e) {}
-        }
-
-        function executeMovementAudioChime(isCapture, isCheck) {
-            if (isCheck) {
-                playSynthesizerTone(523.25, 'triangle', 0.15, 0.25); // C5 check chime
-                setTimeout(function(){ playSynthesizerTone(659.25, 'triangle', 0.3, 0.25); }, 80); // E5
-            } else if (isCapture) {
-                playSynthesizerTone(293.66, 'sawtooth', 0.2, 0.12); // D4 scratch component
-                playSynthesizerTone(196.00, 'sine', 0.25, 0.3); // G3 bottom resonance weight
-            } else {
-                playSynthesizerTone(329.63, 'sine', 0.12, 0.35); // E4 casual clear tone node
-            }
-        }
-
-        function triggerBackgroundMusic() {
-            if (!audioCtx) return;
-            
-            var chords = [
-                [130.81, 164.81, 196.00, 261.63], // C Major foundational sweep bounds
-                [146.83, 174.61, 220.00, 293.66], // D minor modal pivot element
-                [130.81, 174.61, 220.00, 349.23], // F Major structural expansion array
-                [116.54, 146.83, 174.61, 233.08]  // Bb Major mixolydian cadential shift
-            ];
-
-            var chord = chords[currentChordIndex];
-            chord.forEach(function(freq, i) {
-                try {
-                    var osc = audioCtx.createOscillator();
-                    var gain = audioCtx.createGain();
-                    
-                    osc.type = 'sine';
-                    osc.frequency.value = freq;
-                    
-                    gain.gain.setValueAtTime(0, audioCtx.currentTime);
-                    gain.gain.linearRampToValueAtTime(0.015, audioCtx.currentTime + 1.5);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 4.8);
-                    
-                    osc.connect(gain);
-                    gain.connect(musicGainNode);
-                    
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 5.0);
-                } catch(e) {}
-            });
-
-            currentChordIndex = (currentChordIndex + 1) % chords.length;
-        }
-
-        function toggleBackgroundMusic() {
-            if (!audioCtx) {
-                try {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                } catch(e) { return; }
-            }
-            
-            if (isMusicPlaying) {
-                clearInterval(musicInterval);
-                isMusicPlaying = false;
-                if(musicGainNode) musicGainNode.gain.value = 0;
-                document.getElementById('musicToggleBtn').classList.remove('active-music');
-            } else {
-                if (!musicGainNode) {
-                    musicGainNode = audioCtx.createGain();
-                    musicGainNode.connect(audioCtx.destination);
-                }
-                musicGainNode.gain.value = 1;
-                isMusicPlaying = true;
-                triggerBackgroundMusic();
-                musicInterval = setInterval(triggerBackgroundMusic, 5000);
-                document.getElementById('musicToggleBtn').classList.add('active-music');
-            }
-            updateUILocalization();
-        }
-
-        // --- GAME MECHANICS MOVEMENT MATRIX LOGIC ---
         function onDragStart(source, piece, position, orientation) {
             if (game.game_over()) return false;
 
-            // Block validation rules matching alignment orientations
-            if ((currentGameMode === 'bot' || currentGameMode === 'coach') && 
-                ((playerColor === 'w' && piece.search(/^b/) !== -1) || 
-                 (playerColor === 'b' && piece.search(/^w/) !== -1))) {
-                return false;
+            if (currentGameMode !== 'multiplayer') {
+                if ((playerColor === 'w' && piece.search(/^b/) !== -1) ||
+                    (playerColor === 'b' && piece.search(/^w/) !== -1)) {
+                    return false;
+                }
             }
         }
 
         function onDrop(source, target) {
-            // Intercept legal move configurations
             var move = game.move({
                 from: source,
                 to: target,
-                promotion: 'q' // Auto promote profile parameters to Queen structure
+                promotion: 'q'
             });
 
             if (move === null) return 'snapback';
 
-            var isCapture = move.flags.includes('c') || move.flags.includes('e');
-            var isCheck = game.in_check();
-            executeMovementAudioChime(isCapture, isCheck);
-
-            // Coach evaluation hooks context
-            if (currentGameMode === 'coach') {
-                processCoachResponseMetrics(move, isCapture);
+            if (move.captured) {
+                playSynthesizedSound('capture');
+                if (currentGameMode === 'coach') appendCoachChatBubble('capture');
+            } else {
+                playSynthesizedSound('move');
+                if (currentGameMode === 'coach' && Math.random() < 0.4) appendCoachChatBubble('move');
             }
 
-            checkMatchTerminalConditions();
+            checkForCheckmateTermination();
 
-            // Fire response loop sequences inside match parameters
-            if (!game.game_over() && (currentGameMode === 'bot' || currentGameMode === 'coach')) {
-                setTimeout(triggerEngineMoveCalculation, 600);
+            if (!game.game_over() && currentGameMode !== 'multiplayer') {
+                setTimeout(triggerEngineMoveCalculation, 450);
             }
         }
 
@@ -1218,72 +1447,85 @@
         }
 
         function takebackMove() {
-            if (currentGameMode === 'multiplayer') return;
-            
-            // Undo twice to revert human player back one ply position state
-            game.undo();
-            game.undo();
+            if (currentGameMode === 'multiplayer' || game.history().length < 2) return;
+            game.undo(); 
+            game.undo(); 
             board.position(game.fen());
         }
 
-        // --- ENEMY ENGINE ARTIFICIAL APPROXIMATION ---
+        // --- EVALUATION ENGINE AUTOMATION ---
         function triggerEngineMoveCalculation() {
             if (game.game_over()) return;
 
-            var legalMoves = game.moves({ verbose: true });
-            if (legalMoves.length === 0) return;
+            var availableMoves = game.moves();
+            if (availableMoves.length === 0) return;
 
-            var currentDepthLevel = parseInt(document.getElementById('botLevel').value) || 1;
-            var targetMove = null;
+            var selectedLevel = parseInt(document.getElementById('botLevel').value) || 1;
+            var chosenMove = "";
 
-            if (currentDepthLevel === 1) {
-                // Random deployment matrix layout
-                var index = Math.floor(Math.random() * legalMoves.length);
-                targetMove = legalMoves[index];
-            } else if (currentDepthLevel === 2) {
-                // Tactical prioritization strategy filters
-                var captureMoves = legalMoves.filter(function(m) { return m.flags.includes('c') || m.flags.includes('e'); });
-                if (captureMoves.length > 0 && Math.random() < 0.70) {
-                    targetMove = captureMoves[Math.floor(Math.random() * captureMoves.length)];
-                } else {
-                    targetMove = legalMoves[Math.floor(Math.random() * legalMoves.length)];
-                }
+            if (selectedLevel === 1) {
+                chosenMove = availableMoves[Math.floor(Math.random() * availableMoves.length)];
             } else {
-                // High heuristic deep sweep search parameters fallback
-                var capturingOrCheckingMoves = legalMoves.filter(function(m) {
-                    game.move({ from: m.from, to: m.to, promotion: 'q' });
-                    var givesCheck = game.in_check();
+                var bestEvaluatedMove = null;
+                var localizedScore = -99999;
+                
+                for (var i = 0; i < availableMoves.length; i++) {
+                    var testMove = availableMoves[i];
+                    game.move(testMove);
+                    var stateEvaluation = scoreBoardState(game.board());
                     game.undo();
-                    return givesCheck || m.flags.includes('c') || m.flags.includes('e');
-                });
 
-                if (capturingOrCheckingMoves.length > 0 && Math.random() < 0.85) {
-                    targetMove = capturingOrCheckingMoves[Math.floor(Math.random() * capturingOrCheckingMoves.length)];
-                } else {
-                    targetMove = legalMoves[Math.floor(Math.random() * legalMoves.length)];
+                    if (playerColor === 'w') {
+                        stateEvaluation = -stateEvaluation;
+                    }
+
+                    if (stateEvaluation > localizedScore) {
+                        localizedScore = stateEvaluation;
+                        bestEvaluatedMove = testMove;
+                    }
                 }
+                chosenMove = bestEvaluatedMove || availableMoves[Math.floor(Math.random() * availableMoves.length)];
             }
 
-            if (targetMove) {
-                var executedMove = game.move({
-                    from: targetMove.from,
-                    to: targetMove.to,
-                    promotion: 'q'
-                });
+            var executingMove = game.move(chosenMove);
+            board.position(game.fen());
 
-                board.position(game.fen());
-                
-                var isCap = executedMove.flags.includes('c') || executedMove.flags.includes('e');
-                var isChk = game.in_check();
-                executeMovementAudioChime(isCap, isChk);
-                
-                checkMatchTerminalConditions();
+            if (executingMove && executingMove.captured) {
+                playSynthesizedSound('capture');
+            } else {
+                playSynthesizedSound('move');
             }
+
+            checkForCheckmateTermination();
         }
 
-        function checkMatchTerminalConditions() {
+        function scoreBoardState(matrix) {
+            var sum = 0;
+            var values = { 'p': 10, 'r': 50, 'n': 30, 'b': 30, 'q': 90, 'k': 9000 };
+            
+            for (var r = 0; r < 8; r++) {
+                for (var c = 0; c < 8; c++) {
+                    var targetPiece = matrix[r][c];
+                    if (targetPiece) {
+                        var localizedWeight = values[targetPiece.type];
+                        if (targetPiece.color === 'w') {
+                            sum += localizedWeight;
+                        } else {
+                            sum -= localizedWeight;
+                        }
+                    }
+                }
+            }
+            return sum;
+        }
+
+        function checkForCheckmateTermination() {
             if (game.in_checkmate()) {
-                var winner = game.turn() === 'w' ? 'Black' : 'White';
+                playSynthesizedSound('gameover');
+                var history = game.history({ verbose: true });
+                var lastAction = history[history.length - 1];
+                var winner = lastAction.color === 'w' ? 'White' : 'Black';
+                
                 var labelWinner = winner === 'White' ? i18n[currentLang].side_white : i18n[currentLang].side_black;
 
                 var announcement = "";
@@ -1292,7 +1534,7 @@
                         ? username + i18n[currentLang].win_msg
                         : i18n[currentLang].lose_msg + username + i18n[currentLang].by_checkmate;
                 } else {
-                    announcement = i18n[currentLang].multi_win + labelWinner + " .";
+                    announcement = i18n[currentLang].multi_win + labelWinner + ".";
                 }
 
                 document.getElementById('winnerMessage').innerText = announcement;
@@ -1307,56 +1549,113 @@
                 'bP': 'c/c7/Chess_pdt45', 'bR': 'f/ff/Chess_rdt45', 'bN': 'e/ef/Chess_ndt45',
                 'bB': '9/98/Chess_bdt45', 'bQ': '4/47/Chess_qdt45', 'bK': 'f/f0/Chess_kdt45'
             };
-            if (paths[piece]) {
-                return 'https://upload.wikimedia.org/wikipedia/commons/' + paths[piece] + '.svg';
-            }
-            return 'img/chesspieces/wikipedia/' + piece + '.png';
+            return 'https://upload.wikimedia.org/wikipedia/commons/' + paths[piece] + '.svg';
         }
 
-        // --- TRAIN GRANDMASTER COACH CHAT CORE MODULE ---
-        function appendChatBubbleElement(message, sender) {
-            var wrapper = document.getElementById('coachChatHistory');
-            if (!wrapper) return;
+        // --- COACH ARTIFICIAL CHAT CHANNELS ---
+        function initializeCoachWorkspace() {
+            var viewport = document.getElementById('coachChatHistory');
+            viewport.innerHTML = "";
             
+            var initialBubble = document.createElement('div');
+            initialBubble.className = "chat-bubble coach";
+            initialBubble.innerText = i18n[currentLang].coach_welcome;
+            viewport.appendChild(initialBubble);
+        }
+
+        function appendCoachChatBubble(contextKey) {
+            var viewport = document.getElementById('coachChatHistory');
+            var replyStr = "";
+
+            if (contextKey === 'move') replyStr = i18n[currentLang].coach_reply_move;
+            else if (contextKey === 'capture') replyStr = i18n[currentLang].coach_reply_capture;
+            else replyStr = i18n[currentLang].coach_reply_generic;
+
             var bubble = document.createElement('div');
-            bubble.classList.add('chat-bubble', sender);
-            bubble.innerText = message;
-            
-            wrapper.appendChild(bubble);
-            wrapper.scrollTop = wrapper.scrollHeight;
-        }
-
-        function initializeCoachWelcomeMessage() {
-            var history = document.getElementById('coachChatHistory');
-            if (history) history.innerHTML = "";
-            appendChatBubbleElement(i18n[currentLang].coach_welcome, 'coach');
-        }
-
-        function processCoachResponseMetrics(move, isCapture) {
-            setTimeout(function() {
-                var text = i18n[currentLang].coach_reply_generic;
-                if (isCapture) {
-                    text = i18n[currentLang].coach_reply_capture;
-                } else if (move.sanityPiece === 'p' || Math.random() < 0.5) {
-                    text = i18n[currentLang].coach_reply_move;
-                }
-                appendChatBubbleElement(text, 'coach');
-            }, 750);
+            bubble.className = "chat-bubble coach";
+            bubble.innerText = replyStr;
+            viewport.appendChild(bubble);
+            viewport.scrollTop = viewport.scrollHeight;
         }
 
         function submitCoachMessage() {
-            var input = document.getElementById('coachTextField');
-            var msg = input.value.trim();
-            if (msg.length === 0) return;
+            var field = document.getElementById('coachTextField');
+            var rawText = field.value.trim();
+            if (!rawText) return;
 
-            appendChatBubbleElement(msg, 'user');
-            input.value = "";
+            var viewport = document.getElementById('coachChatHistory');
+            
+            var userBubble = document.createElement('div');
+            userBubble.className = "chat-bubble user";
+            userBubble.innerText = rawText;
+            viewport.appendChild(userBubble);
+            
+            field.value = "";
+            viewport.scrollTop = viewport.scrollHeight;
 
-            // Generic automated reflection timeout loop parameters
             setTimeout(function() {
-                appendChatBubbleElement(i18n[currentLang].coach_reply_generic, 'coach');
-            }, 1000);
+                appendCoachChatBubble('generic');
+            }, 850);
         }
+
+        // --- LOCALIZATION & VIEWPORT RENDERING CONTROL ---
+        function changeLanguage(lang) {
+            currentLang = lang;
+            
+            if (lang === 'ar') {
+                document.body.setAttribute('dir', 'rtl');
+            } else {
+                document.body.removeAttribute('dir');
+            }
+
+            // Sync structural tabs/elements language safely
+            switchAuthTab(currentAuthMode);
+
+            var localizableNodes = document.querySelectorAll('[data-i18n]');
+            localizableNodes.forEach(function(el) {
+                var key = el.getAttribute('data-i18n');
+                if (i18n[lang] && i18n[lang][key]) {
+                    if (el.tagName === 'INPUT' && el.placeholder) {
+                        el.placeholder = i18n[lang][key];
+                    } else {
+                        if (key === 'welcome_arena') {
+                            el.innerHTML = i18n[lang][key] + ' ';
+                        } else if (key === 'panel_live_status') {
+                            el.innerHTML = '● ' + i18n[lang][key];
+                        } else {
+                            el.innerText = i18n[lang][key];
+                        }
+                    }
+                }
+            });
+            
+            var coachText = document.getElementById('coachTextField');
+            if (coachText) {
+                coachText.placeholder = i18n[currentLang].coach_placeholder;
+            }
+        }
+
+        // --- INITIAL URL EXTRACTION RUNTIME ---
+        window.addEventListener('DOMContentLoaded', function() {
+            var params = new URLSearchParams(window.location.search);
+            var roomParam = params.get('room');
+            var sideParam = params.get('side');
+            var guestParam = params.get('guest');
+
+            if (roomParam && guestParam === 'true') {
+                currentGameMode = 'multiplayer';
+                if (sideParam === 'b') playerColor = 'b';
+                if (sideParam === 'w') playerColor = 'w';
+                
+                document.getElementById('authOverlay').style.display = 'none';
+                username = "Guest Challenger";
+                document.getElementById('displayUsername').innerText = username;
+                
+                setTimeout(function() {
+                    startGame('multiplayer');
+                }, 1600);
+            }
+        });
     </script>
 </body>
 </html>
