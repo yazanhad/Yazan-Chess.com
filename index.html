@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Yazan Chess</title>
+    <title>Advanced AI & Chess Arena</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -186,6 +186,25 @@
 
         .back-nav-btn:hover {
             color: #00f5a0;
+        }
+
+        /* LOGOUT BUTTON TOP RIGHT OF MENUS */
+        .logout-btn {
+            position: absolute;
+            top: 15px;
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 13px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            font-weight: 500;
+            padding: 5px;
+        }
+        body:not([dir="rtl"]) .logout-btn { right: 15px; }
+        body[dir="rtl"] .logout-btn { left: 15px; }
+        .logout-btn:hover {
+            color: #ff5959;
         }
 
         .setup-group {
@@ -784,7 +803,7 @@
     </div>
 
     <div id="modeScreen" class="setup-card hidden-panel">
-        <button class="back-nav-btn" onclick="navigateToStep('auth')">←</button>
+        <button class="logout-btn" onclick="handleLogout()" id="logoutBtnText">Log Out</button>
         <h2 data-i18n="select_mode_title">Select Match Architecture</h2>
         
         <button class="mode-btn" onclick="selectMode('bot')">
@@ -959,7 +978,8 @@
                 coach_welcome: "Hello! I am your Grandmaster Coach. Let's practice. What aspect of this setup would you like to review?",
                 coach_reply_move: "Good move. Focus on maintaining control over the center board. What is your strategy for development?",
                 coach_reply_capture: "Excellent trade. Keep track of tactical structural weaknesses in their ranks.",
-                coach_reply_generic: "An interesting approach. Always watch out for hanging pieces and unexpected check vectors."
+                coach_reply_generic: "An interesting approach. Always watch out for hanging pieces and unexpected check vectors.",
+                logout_txt: "Log Out"
             },
             es: {
                 profile_title: "Perfil del Jugador",
@@ -1103,11 +1123,12 @@
                 coach_welcome: "مرحباً! أنا مدربك الأستاذ الكبير. لنبدأ التدريب. ما هو الجانب الذي ترغب في مراجعته في هذا الوضع؟",
                 coach_reply_move: "نقلة جيدة. ركز على الحفاظ على السيطرة على وسط اللوحة. ما هي استراتيجيتك للتطوير؟",
                 coach_reply_capture: "تبادل ممتاز. تابع نقاط الضعف الهيكلية التكتيكية في صفوفهم.",
-                coach_reply_generic: "نهج مثير للاهتمام. احذر دائماً من القطع المعلقة ومتجهات الكش المفاجئة."
+                coach_reply_generic: "نهج مثير للاهتمام. احذر دائماً من القطع المعلقة ومتجهات الكش المفاجئة.",
+                logout_txt: "تسجيل الخروج"
             }
         };
 
-        // --- AUTH SYSTEM IMPLEMENTATION (WITH LOCAL STORAGE DATABASE) ---
+        // --- AUTH SYSTEM IMPLEMENTATION WITH PERSISTENCE ---
         function switchAuthTab(mode) {
             currentAuthMode = mode;
             
@@ -1163,11 +1184,10 @@
                 return;
             }
 
-            // Get local mock database database profiles
+            // Get local storage account registry
             var registeredUsers = JSON.parse(localStorage.getItem('chess_users') || '{}');
 
             if (currentAuthMode === 'signup') {
-                // Validation Rules for creating accounts
                 if (passwordInput.length < 6) {
                     showAuthError(currentLang === 'ar' ? 'يجب أن تتكون كلمة المرور من 6 رموز على الأقل' : 'Password must be at least 6 characters.');
                     return;
@@ -1181,7 +1201,7 @@
                     return;
                 }
 
-                // Write and store new profile configuration to simulated records
+                // Write new profiles to standard records
                 registeredUsers[usernameInput.toLowerCase()] = {
                     username: usernameInput,
                     password: passwordInput
@@ -1190,7 +1210,6 @@
                 
                 username = usernameInput;
             } else {
-                // LOG IN VALIDATION CHECKS
                 var userAccount = registeredUsers[usernameInput.toLowerCase()];
                 
                 if (!userAccount) {
@@ -1205,7 +1224,14 @@
                 username = userAccount.username;
             }
 
-            // Logged in/Signed up successfully! Transition to welcome screen
+            // PERSIST USER SESSION TO STORAGE FOREVER
+            localStorage.setItem('active_chess_session_user', username);
+
+            proceedToDashboard(username);
+        }
+
+        function proceedToDashboard(loggedUser) {
+            username = loggedUser;
             document.getElementById('displayUsername').innerText = username;
             document.getElementById('authOverlay').style.display = 'none';
             
@@ -1215,7 +1241,20 @@
             setTimeout(function() {
                 greeting.classList.add('hidden-panel');
                 document.getElementById('modeScreen').classList.remove('hidden-panel');
-            }, 1800);
+            }, 1500);
+        }
+
+        function handleLogout() {
+            // Clear active persistent device session token
+            localStorage.removeItem('active_chess_session_user');
+            
+            // Return back to standard authorization state
+            document.getElementById('modeScreen').classList.add('hidden-panel');
+            document.getElementById('setupScreen').classList.add('hidden-panel');
+            document.getElementById('multiplayerSetupScreen').classList.add('hidden-panel');
+            document.getElementById('gameContainer').style.display = 'none';
+            document.getElementById('authOverlay').style.display = 'flex';
+            switchAuthTab('login');
         }
 
         function showAuthError(message) {
@@ -1309,7 +1348,7 @@
             document.getElementById('botLevel').value = val;
         }
 
-        // --- EXPERIMENTAL AUDIO SOUND FX OBJECTS ---
+        // --- AUDIO SOUND FX OBJECTS ---
         function initAudioContext() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1608,7 +1647,6 @@
                 document.body.removeAttribute('dir');
             }
 
-            // Sync structural tabs/elements language safely
             switchAuthTab(currentAuthMode);
 
             var localizableNodes = document.querySelectorAll('[data-i18n]');
@@ -1633,15 +1671,21 @@
             if (coachText) {
                 coachText.placeholder = i18n[currentLang].coach_placeholder;
             }
+
+            var logoutBtn = document.getElementById('logoutBtnText');
+            if (logoutBtn && i18n[lang].logout_txt) {
+                logoutBtn.innerText = i18n[lang].logout_txt;
+            }
         }
 
-        // --- INITIAL URL EXTRACTION RUNTIME ---
+        // --- INITIAL RUNTIME ENGINE (CHECKS DEVICE SESSIONS & HOTLINKS) ---
         window.addEventListener('DOMContentLoaded', function() {
             var params = new URLSearchParams(window.location.search);
             var roomParam = params.get('room');
             var sideParam = params.get('side');
             var guestParam = params.get('guest');
 
+            // 1. Check for Multiplayer guest room override links
             if (roomParam && guestParam === 'true') {
                 currentGameMode = 'multiplayer';
                 if (sideParam === 'b') playerColor = 'b';
@@ -1654,6 +1698,14 @@
                 setTimeout(function() {
                     startGame('multiplayer');
                 }, 1600);
+                return;
+            }
+
+            // 2. Check device storage for existing valid profile session
+            var persistentUserSession = localStorage.getItem('active_chess_session_user');
+            if (persistentUserSession) {
+                // Instantly bypass login screens securely
+                proceedToDashboard(persistentUserSession);
             }
         });
     </script>
